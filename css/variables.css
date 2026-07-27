@@ -1,0 +1,30 @@
+:root {
+    /* Colors */
+    --color-bg-sky: #A1C4FD;
+    --color-bg-sky-dark: #C2E9FB;
+    --color-text-main: #333333;
+    --color-white: #FFFFFF;
+    
+    /* Keyboard zones */
+    --key-zone-pink: #FFB3BA;
+    --key-zone-orange: #FFDFBA;
+    --key-zone-yellow: #FFFFBA;
+    --key-zone-green: #BAFFC9;
+    --key-zone-blue: #BAE1FF;
+    --key-zone-purple: #E0BBE4;
+    
+    /* Buttons */
+    --btn-primary: #FF9A9E;
+    --btn-secondary: #FECFEF;
+    --btn-tertiary: #A18CD1;
+    --btn-shadow: rgba(0,0,0,0.1);
+    
+    /* Border radii */
+    --radius-sm: 8px;
+    --radius-md: 16px;
+    --radius-lg: 24px;
+    --radius-round: 50px;
+    
+    /* Typography */
+    --font-family: 'Fredoka', sans-serif;
+}

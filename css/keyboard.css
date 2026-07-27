@@ -1,0 +1,58 @@
+.keyboard-container {
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(10px);
+    border-top-left-radius: var(--radius-lg);
+    border-top-right-radius: var(--radius-lg);
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.kb-row {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.kb-key {
+    width: clamp(38px, 5.5vw, 65px);
+    height: clamp(38px, 5.5vw, 65px);
+    border-radius: var(--radius-sm);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: clamp(1.2rem, 2.5vw, 2.2rem);
+    font-weight: bold;
+    color: #555;
+    background: white;
+    box-shadow: 0 4px 0 #ddd;
+    transition: all 0.1s ease;
+    text-transform: uppercase;
+}
+
+.kb-key.pressed {
+    transform: translateY(4px);
+    box-shadow: 0 0 0 #ddd;
+    background: #eee;
+}
+
+/* Hand Zones */
+.kb-key[data-zone="pink"] { background: var(--key-zone-pink); box-shadow: 0 4px 0 #E5A1A7; }
+.kb-key[data-zone="orange"] { background: var(--key-zone-orange); box-shadow: 0 4px 0 #E5C8A7; }
+.kb-key[data-zone="yellow"] { background: var(--key-zone-yellow); box-shadow: 0 4px 0 #E5E5A7; }
+.kb-key[data-zone="green"] { background: var(--key-zone-green); box-shadow: 0 4px 0 #A7E5B4; }
+.kb-key[data-zone="blue"] { background: var(--key-zone-blue); box-shadow: 0 4px 0 #A7CBE5; }
+.kb-key[data-zone="purple"] { background: var(--key-zone-purple); box-shadow: 0 4px 0 #C9A7CD; }
+
+/* Highlights for target keys */
+.kb-key.target {
+    animation: pulseKey 1s infinite alternate;
+    border: 3px solid white;
+}
+
+.kb-key.error-shake {
+    animation: shakeError 0.4s ease-in-out;
+}
