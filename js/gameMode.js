@@ -444,8 +444,8 @@ const gameMode = {
             laser.style.height = `${length}px`;
             laser.style.left = `${shipX}px`;
             laser.style.top = `${shipY - 60 + dy/2 - length/2}px`;
-            // Math for laser rotation
-            laser.style.transform = `rotate(${angle + 90}deg)`;
+            // Math for laser rotation passed to CSS
+            laser.style.setProperty('--angle', `${angle + 90}deg`);
             
             area.appendChild(laser);
             setTimeout(() => { if(laser.parentNode) laser.parentNode.removeChild(laser); }, 200);

@@ -225,44 +225,7 @@ const lessons = [
         ]
     },
 
-    // ===== Stage 4: Numbers & Symbols =====
-    {
-        id: 20, title: 'Numbers: 1 2 3', newKeys: ['1','2','3'],
-        chars: '123fjdksla',
-        drills: [
-            '111 222 333 123 321 132',
-            'add 12 and 31 and 23;',
-            '123 213 312 132 231 321',
-        ]
-    },
-    {
-        id: 21, title: 'Numbers: 4 5 6 7', newKeys: ['4','5','6','7'],
-        chars: '1234567fjdksla',
-        drills: [
-            '444 555 666 777 456 567',
-            '1234567 7654321 1357 2467',
-            'sell 45 and 67 for 123;',
-        ]
-    },
-    {
-        id: 22, title: 'Numbers: 8 9 0', newKeys: ['8','9','0'],
-        chars: '1234567890fjdksla',
-        drills: [
-            '888 999 000 890 908 098',
-            '1234567890 0987654321',
-            'dial 456 or 7890 soon;',
-        ]
-    },
-    {
-        id: 23, title: 'Symbols: ! ? \'', newKeys: ['!','?',"'"],
-        chars: "fjdksla;ghrueiwoqptyvm,cx.z/bn",
-        drills: [
-            "Hello! How are you?",
-            "It's a great day, isn't it?",
-            "What? Where? Why? Who?",
-            "Let's go! That's amazing!",
-        ]
-    },
+
 
     // ===== Stage 5: Words & Sentences =====
     {
@@ -308,9 +271,9 @@ const lessons = [
         id: 28, title: 'Mixed Practice', newKeys: [],
         chars: '',
         drills: [
-            'She has 3 cats and 2 dogs.',
-            'I ate 5 apples yesterday.',
-            'Call me at 7890 today!',
+            'She has three cats and two dogs.',
+            'I ate five apples yesterday.',
+            'Call me at home today!',
         ]
     },
     {
@@ -363,15 +326,7 @@ const lessons = [
             'vacant, combine, maximize.',
         ]
     },
-    {
-        id: 34, title: 'Number Row Mastery', newKeys: [],
-        chars: '1234567890',
-        drills: [
-            '10 20 30 40 50 60 70 80 90',
-            '123 456 789 012 345 678 901',
-            '99 88 77 66 55 44 33 22 11',
-        ]
-    },
+
     {
         id: 35, title: 'Left Hand Focus', newKeys: [],
         chars: 'qwertasdfgzxcvb12345',
@@ -494,7 +449,7 @@ const lessons = [
         chars: '',
         drills: [
             'Today is my birthday! I am so happy.',
-            'We have a big cake with 7 candles.',
+            'We have a big cake with seven candles.',
             'My friends gave me nice presents.',
             'We played games until it was dark.',
         ]
@@ -503,14 +458,62 @@ const lessons = [
         id: 48, title: 'Going to School', newKeys: [],
         chars: '',
         drills: [
-            'I wake up at 7 o\'clock every morning.',
+            'I wake up at seven every morning.',
             'I brush my teeth and eat breakfast.',
-            'The school bus arrives at 8 o\'clock.',
+            'The school bus arrives at eight.',
             'My favorite class is art and music!',
         ]
     },
 
-    // ===== Stage 9: Mixed Challenge =====
+    // ===== Stage 9: Numbers & Symbols =====
+    {
+        id: 20, title: 'Numbers: 1 2 3', newKeys: ['1','2','3'],
+        chars: '123fjdksla',
+        drills: [
+            '111 222 333 123 321 132',
+            'add 12 and 31 and 23;',
+            '123 213 312 132 231 321',
+        ]
+    },
+    {
+        id: 21, title: 'Numbers: 4 5 6 7', newKeys: ['4','5','6','7'],
+        chars: '1234567fjdksla',
+        drills: [
+            '444 555 666 777 456 567',
+            '1234567 7654321 1357 2467',
+            'sell 45 and 67 for 123;',
+        ]
+    },
+    {
+        id: 22, title: 'Numbers: 8 9 0', newKeys: ['8','9','0'],
+        chars: '1234567890fjdksla',
+        drills: [
+            '888 999 000 890 908 098',
+            '1234567890 0987654321',
+            'dial 456 or 7890 soon;',
+        ]
+    },
+    {
+        id: 34, title: 'Number Row Mastery', newKeys: [],
+        chars: '1234567890',
+        drills: [
+            '10 20 30 40 50 60 70 80 90',
+            '123 456 789 012 345 678 901',
+            '99 88 77 66 55 44 33 22 11',
+        ]
+    },
+    {
+        id: 23, title: 'Symbols: ! ? \'', newKeys: ['!','?',"'"],
+        chars: "fjdksla;ghrueiwoqptyvm,cx.z/bn",
+        drills: [
+            "Hello! How are you?",
+            "It's a great day, isn't it?",
+            "What? Where? Why? Who?",
+            "Let's go! That's amazing!",
+        ]
+    },
+
+    // ===== Stage 10: Mixed Challenge =====
     {
         id: 49, title: 'Numbers in Sentences', newKeys: [],
         chars: '',
@@ -571,7 +574,7 @@ const lessons = [
         ]
     },
 
-    // ===== Stage 10: Speed Challenge =====
+    // ===== Stage 11: Speed Challenge =====
     {
         id: 55, title: 'Tongue Twisters 1', newKeys: [],
         chars: '',

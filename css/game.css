@@ -394,9 +394,9 @@
 }
 
 @keyframes fireLaser {
-    0% { opacity: 1; transform: scaleY(0); }
-    50% { opacity: 1; transform: scaleY(1); }
-    100% { opacity: 0; transform: scaleY(1); }
+    0% { opacity: 1; transform: rotate(var(--angle)) scaleY(0); }
+    50% { opacity: 1; transform: rotate(var(--angle)) scaleY(1); }
+    100% { opacity: 0; transform: rotate(var(--angle)) scaleY(1); }
 }
 
 
