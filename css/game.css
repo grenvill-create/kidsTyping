@@ -4,6 +4,9 @@
     position: relative;
     overflow: hidden;
     background: linear-gradient(180deg, var(--color-bg), var(--color-bg-surface));
+    background-size: cover;
+    background-position: center;
+    transition: background 0.5s ease;
 }
 
 /* ===== GAME 1: Balloon Pop 🎈 ===== */
@@ -42,140 +45,308 @@
     transition: all 0.2s cubic-bezier(0.175,0.885,0.32,1.275);
 }
 
-/* ===== GAME 2: Rain Catcher 🌧️ ===== */
-.raindrop {
+/* ===== GAME 2: Whack-a-Mole 🐹 ===== */
+.mole-grid {
     position: absolute;
-    width: 50px;
-    height: 60px;
-    border-radius: 50% 50% 50% 50% / 30% 30% 70% 70%;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: white;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-    cursor: default;
-    box-shadow: inset -2px -2px 6px rgba(0,0,0,0.15), 1px 3px 8px rgba(0,0,0,0.12);
-    animation: wobble 2s ease-in-out infinite;
+    padding: 0 10%;
+    box-sizing: border-box;
+    flex-wrap: wrap;
+    align-content: center;
+    gap: 30px;
 }
 
-@keyframes wobble {
-    0%, 100% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    75% { transform: translateX(5px); }
+.mole-hole {
+    position: relative;
+    width: 140px;
+    height: 140px;
+    overflow: hidden;
 }
 
-.raindrop.popped {
-    transform: scale(0.2);
-    opacity: 0;
-    transition: all 0.2s ease-out;
+/* The actual hole (ellipse) */
+.mole-hole::before {
+    content: '';
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    width: 120px;
+    height: 40px;
+    background: #3e2723;
+    border-radius: 50%;
+    box-shadow: 
+        inset 0 10px 15px rgba(0,0,0,0.8),
+        0 4px 0 #5d4037;
+    z-index: 1;
 }
 
-/* ===== GAME 3: Speed Typing ⚡ ===== */
-.speed-char {
+/* Front lip of the hole to cover mole */
+.mole-hole::after {
+    content: '';
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    width: 120px;
+    height: 20px;
+    background: transparent;
+    border-radius: 50%;
+    box-shadow: 0 10px 0 #5d4037;
+    z-index: 3;
+}
+
+.mole {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    width: 100px;
+    height: 100px;
+    background-image: url('../assets/img/mole.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: bottom;
+    z-index: 2;
+    transform: translateY(120px);
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.mole.up {
+    transform: translateY(0);
+}
+
+.mole.whacked {
+    transform: translateY(20px) scaleY(0.6);
+    filter: brightness(0.5);
+    transition: transform 0.1s ease-out;
+}
+
+.mole-letter {
+    position: absolute;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fff;
+    border: 3px solid #6d4c41;
+    border-radius: 8px;
+    padding: 2px 12px;
+    font-size: 2rem;
+    font-weight: 900;
+    color: #3e2723;
+    box-shadow: 0 4px 0 #6d4c41;
+    text-shadow: none;
+}
+
+/* ===== GAME 3: Typing Runner 🏎️ ===== */
+.runner-track {
+    position: absolute;
+    bottom: 40px;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background: #7f8fa6;
+    border-top: 4px solid #dcdde1;
+    border-bottom: 4px solid #dcdde1;
+    box-shadow: inset 0 20px 20px rgba(0,0,0,0.1), 0 5px 15px rgba(0,0,0,0.2);
+    overflow: hidden;
+}
+
+/* Moving dashed line */
+.runner-track::before {
+    content: '';
     position: absolute;
     top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    left: 0;
+    width: 200%;
+    height: 4px;
+    background-image: linear-gradient(90deg, #fbc531 50%, transparent 50%);
+    background-size: 60px 100%;
+    transform: translateY(-50%);
+    animation: moveTrack 0.5s linear infinite;
+}
+
+@keyframes moveTrack {
+    0% { transform: translateY(-50%) translateX(0); }
+    100% { transform: translateY(-50%) translateX(-60px); }
+}
+
+.runner-char {
+    position: absolute;
+    bottom: 50px;
+    left: 100px;
     width: 120px;
-    height: 120px;
-    border-radius: 50%;
+    height: 100px;
+    background-image: url('../assets/img/kart.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: bottom;
+    z-index: 10;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.runner-char.jump {
+    transform: translateY(-100px) rotate(-10deg);
+}
+
+.runner-char.stumble {
+    transform: rotate(15deg);
+    filter: grayscale(0.3);
+    transition: all 0.2s;
+}
+
+/* Traffic Cone style for Hurdle */
+.hurdle {
+    position: absolute;
+    bottom: 60px;
+    width: 50px;
+    height: 60px;
+    background: linear-gradient(to right, #ff7f50, #ff6348, #ff7f50);
+    clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
     display: flex;
     justify-content: center;
-    align-items: center;
-    font-size: 3.5rem;
-    font-weight: 700;
+    align-items: flex-start;
+    padding-top: 15px;
+    font-size: 1.8rem;
+    font-weight: bold;
     color: white;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    box-shadow: 0 8px 32px rgba(102,126,234,0.4), inset 0 -3px 6px rgba(0,0,0,0.15);
-    animation: pulseGlow 1.5s ease-in-out infinite;
-    cursor: default;
+    text-shadow: 1px 1px 0px #333;
+    z-index: 5;
 }
 
-@keyframes pulseGlow {
-    0%, 100% { box-shadow: 0 8px 32px rgba(102,126,234,0.4); transform: translate(-50%, -50%) scale(1); }
-    50% { box-shadow: 0 12px 48px rgba(102,126,234,0.6); transform: translate(-50%, -50%) scale(1.05); }
+.hurdle::after {
+    content: '';
+    position: absolute;
+    top: 30%;
+    left: 0;
+    width: 100%;
+    height: 25%;
+    background: #fff;
+    opacity: 0.9;
+    z-index: -1;
 }
 
-.speed-char.popped {
-    animation: none;
-    transform: translate(-50%, -50%) scale(1.5);
+.hurdle.cleared {
     opacity: 0;
-    transition: all 0.25s cubic-bezier(0.175,0.885,0.32,1.275);
+    transform: translateY(-50px) rotate(180deg) scale(1.5);
+    transition: all 0.4s ease-out;
 }
 
-.speed-char.missed {
-    animation: none;
-    background: linear-gradient(135deg, #ccc, #999);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
-    transform: translate(-50%, -50%) scale(0.8);
+/* ===== GAME 4: Space Defender 🛸 ===== */
+.game-area.space-bg {
+    background: #0f0c29 !important;
+}
+
+/* Starfield effect */
+.game-area.space-bg::before {
+    content: '';
+    position: absolute;
+    width: 200%;
+    height: 200%;
+    top: -50%;
+    left: -50%;
+    background-image: 
+      radial-gradient(1px 1px at 20px 30px, #fff, rgba(0,0,0,0)),
+      radial-gradient(1.5px 1.5px at 40px 70px, #fff, rgba(0,0,0,0)),
+      radial-gradient(1px 1px at 50px 160px, #fff, rgba(0,0,0,0)),
+      radial-gradient(2px 2px at 90px 40px, #fff, rgba(0,0,0,0)),
+      radial-gradient(1px 1px at 130px 80px, #fff, rgba(0,0,0,0)),
+      radial-gradient(1.5px 1.5px at 160px 120px, #fff, rgba(0,0,0,0));
+    background-repeat: repeat;
+    background-size: 200px 200px;
+    animation: rotateStars 100s linear infinite;
     opacity: 0.5;
-    transition: all 0.3s ease;
+    pointer-events: none;
 }
 
-.speed-char.shake {
-    animation: shakeAnim 0.3s ease;
+@keyframes rotateStars {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
-@keyframes shakeAnim {
-    0%, 100% { transform: translate(-50%, -50%); }
-    20% { transform: translate(calc(-50% + 10px), -50%); }
-    40% { transform: translate(calc(-50% - 10px), -50%); }
-    60% { transform: translate(calc(-50% + 6px), -50%); }
-    80% { transform: translate(calc(-50% - 6px), -50%); }
+.space-ship {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 120px;
+    background-image: url('../assets/img/space.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    z-index: 10;
+    transition: transform 0.1s;
+    filter: drop-shadow(0 0 10px rgba(0, 206, 201, 0.5));
 }
 
-/* ===== GAME 4: Target Practice 🎯 ===== */
-.target-char {
+.asteroid {
     position: absolute;
     width: 70px;
     height: 70px;
-    border-radius: 50%;
+    background-image: url('../assets/img/asteroid.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 2.2rem;
-    font-weight: 700;
-    color: white;
-    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-    cursor: default;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.15), inset 0 -2px 4px rgba(0,0,0,0.1);
-    animation: targetPop 0.3s cubic-bezier(0.175,0.885,0.32,1.275);
-    transition: transform 0.1s, opacity 0.1s;
+    font-weight: 900;
+    color: #fff;
+    text-shadow: 2px 2px 0px #000, -1px -1px 0px #000;
+    z-index: 5;
+    animation: slowSpin 10s linear infinite;
 }
 
-/* Concentric ring decoration */
-.target-char::before {
-    content: '';
+@keyframes slowSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.asteroid .letter-wrap {
+    /* Counter-rotate so letter stays upright */
+    animation: counterSpin 10s linear infinite;
+}
+
+@keyframes counterSpin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(-360deg); }
+}
+
+.asteroid.destroyed {
+    animation: explosion 0.3s ease-out forwards;
+}
+
+@keyframes explosion {
+    0% { transform: scale(1); filter: brightness(1); }
+    50% { transform: scale(1.5); filter: brightness(3) hue-rotate(90deg); }
+    100% { transform: scale(2); opacity: 0; filter: brightness(5); }
+}
+
+.laser {
     position: absolute;
-    inset: -6px;
-    border: 3px solid rgba(255,255,255,0.4);
-    border-radius: 50%;
-    animation: ringPulse 2s ease-in-out infinite;
-}
-
-@keyframes targetPop {
-    0% { transform: scale(0); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
-}
-
-@keyframes ringPulse {
-    0%, 100% { transform: scale(1); opacity: 0.6; }
-    50% { transform: scale(1.15); opacity: 0.2; }
-}
-
-.target-char.popped {
-    transform: scale(1.5);
+    width: 6px;
+    background: #00e5ff;
+    border-radius: 3px;
+    box-shadow: 0 0 10px #00e5ff, 0 0 20px #00e5ff, 0 0 30px #fff;
+    transform-origin: bottom center;
+    z-index: 8;
     opacity: 0;
-    transition: all 0.2s cubic-bezier(0.175,0.885,0.32,1.275);
+    animation: fireLaser 0.15s ease-out;
 }
 
-.target-char.missed {
-    transform: scale(0.5);
-    opacity: 0;
-    transition: all 0.3s ease;
+@keyframes fireLaser {
+    0% { opacity: 1; transform: scaleY(0); }
+    50% { opacity: 1; transform: scaleY(1); }
+    100% { opacity: 0; transform: scaleY(1); }
 }
+
 
 /* ===== Game Card Style on Map ===== */
 .lesson-card.game-card {

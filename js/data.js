@@ -633,9 +633,9 @@ const lessons = [
 ];
 
 /* ---- Inject Game Nodes ---- */
-const gameTypes = ['balloon', 'rain', 'speed', 'target'];
-const gameIcons = {balloon: '🎈', rain: '🌧️', speed: '⚡', target: '🎯'};
-const gameNames = {balloon: 'Balloon Pop', rain: 'Rain Catcher', speed: 'Speed Typing', target: 'Target Practice'};
+const gameTypes = ['balloon', 'mole', 'runner', 'space'];
+const gameIcons = {balloon: '🎈', mole: '🐹', runner: '🐆', space: '🛸'};
+const gameNames = {balloon: 'Balloon Pop', mole: 'Whack-a-Mole', runner: 'Typing Runner', space: 'Space Defender'};
 
 // Insert a game after every 5th lesson
 const allLessonIds = lessons.map(l => l.id);

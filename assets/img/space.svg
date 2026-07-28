@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 120">
+  <defs>
+    <linearGradient id="shipBody" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" />
+      <stop offset="100%" stop-color="#b2bec3" />
+    </linearGradient>
+    <linearGradient id="window" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#00cec9" />
+      <stop offset="100%" stop-color="#0984e3" />
+    </linearGradient>
+    <radialGradient id="flame" cx="50%" cy="10%" r="90%">
+      <stop offset="0%" stop-color="#ffeaa7" />
+      <stop offset="50%" stop-color="#ff7675" />
+      <stop offset="100%" stop-color="#d63031" opacity="0"/>
+    </radialGradient>
+  </defs>
+  <!-- Flame -->
+  <path d="M 40 100 Q 50 130 60 100 Z" fill="url(#flame)">
+    <animate attributeName="d" values="M 40 100 Q 50 130 60 100 Z; M 42 100 Q 50 120 58 100 Z; M 40 100 Q 50 130 60 100 Z" dur="0.2s" repeatCount="indefinite" />
+  </path>
+  <!-- Wings -->
+  <path d="M 50 20 L 10 90 L 30 100 L 50 80 Z" fill="#ff7675" />
+  <path d="M 50 20 L 90 90 L 70 100 L 50 80 Z" fill="#d63031" />
+  <!-- Main Body -->
+  <path d="M 50 10 C 35 30, 30 70, 35 100 L 65 100 C 70 70, 65 30, 50 10 Z" fill="url(#shipBody)" />
+  <!-- Window -->
+  <ellipse cx="50" cy="50" rx="12" ry="18" fill="url(#window)" />
+  <ellipse cx="47" cy="45" rx="4" ry="6" fill="#fff" opacity="0.6"/>
+  <!-- Thrusters -->
+  <rect x="35" y="100" width="10" height="8" fill="#636e72" />
+  <rect x="55" y="100" width="10" height="8" fill="#636e72" />
+</svg>

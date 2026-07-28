@@ -23,16 +23,20 @@ const gameMode = {
 
         document.getElementById('game-title').textContent = lesson.title;
         document.getElementById('game-score').textContent = `Score: 0 / ${this.targetScore}`;
-        document.getElementById('balloon-area').innerHTML = '';
+        
+        const area = document.getElementById('balloon-area');
+        area.innerHTML = '';
+        area.className = 'game-area'; // Reset all classes
+        area.style.background = ''; // reset inline background
 
         audioManager.init();
 
         // Dispatch to the right game
         switch (this.gameType) {
             case 'balloon': this.startBalloon(); break;
-            case 'rain':    this.startRain();    break;
-            case 'speed':   this.startSpeed();   break;
-            case 'target':  this.startTarget();  break;
+            case 'mole':    this.startMole();    break;
+            case 'runner':  this.startRunner();  break;
+            case 'space':   this.startSpace();   break;
             default:        this.startBalloon(); break;
         }
     },
@@ -41,7 +45,7 @@ const gameMode = {
         this.isPlaying = false;
         if (this.spawnInterval) clearInterval(this.spawnInterval);
         if (this.gameLoop) cancelAnimationFrame(this.gameLoop);
-        if (this._speedTimeout) clearTimeout(this._speedTimeout);
+        if (this._moleTimeout) clearTimeout(this._moleTimeout);
         this.items.forEach(b => {
             if (b.el && b.el.parentNode) b.el.parentNode.removeChild(b.el);
         });
@@ -81,19 +85,29 @@ const gameMode = {
         if (!this.isPlaying) return;
         switch (this.gameType) {
             case 'balloon': this.handleBalloonInput(inputChar); break;
-            case 'rain':    this.handleRainInput(inputChar);    break;
-            case 'speed':   this.handleSpeedInput(inputChar);   break;
-            case 'target':  this.handleTargetInput(inputChar);  break;
+            case 'mole':    this.handleMoleInput(inputChar);    break;
+            case 'runner':  this.handleRunnerInput(inputChar);  break;
+            case 'space':   this.handleSpaceInput(inputChar);   break;
         }
     },
 
     // ===========================================================
     //  GAME 1: BALLOON POP 🎈
-    //  Balloons float up slowly. Type the letter to pop them.
     // ===========================================================
     startBalloon() {
-        this.spawnInterval = setInterval(() => this.spawnBalloon(), 3000);
-        this._startAnimLoop();
+        this.spawnInterval = setInterval(() => this.spawnBalloon(), 2500);
+        this._startAnimLoop((delta) => {
+            const areaHeight = document.getElementById('balloon-area').clientHeight;
+            for (let i = this.items.length - 1; i >= 0; i--) {
+                const b = this.items[i];
+                b.y += b.speed * delta;
+                b.el.style.bottom = `${b.y}px`;
+                if (b.y > areaHeight + 100) {
+                    if (b.el.parentNode) b.el.parentNode.removeChild(b.el);
+                    this.items.splice(i, 1);
+                }
+            }
+        });
     },
 
     spawnBalloon() {
@@ -106,158 +120,323 @@ const gameMode = {
         el.style.backgroundColor = this.randomColor();
         el.style.left = `${30 + Math.random() * (area.clientWidth - 120)}px`;
         area.appendChild(el);
-        this.items.push({ el, char, y: -100, speed: 35 + Math.random() * 25 });
+        this.items.push({ el, char, y: -100, speed: 40 + Math.random() * 30 });
     },
 
     handleBalloonInput(ch) {
-        const idx = this._findLowest(ch);
-        if (idx !== -1) {
-            this._popItem(idx);
-        } else {
-            audioManager.playError();
-        }
-    },
-
-    // ===========================================================
-    //  GAME 2: RAIN CATCHER 🌧️
-    //  Letters fall from top like rain. Type to catch before landing.
-    // ===========================================================
-    startRain() {
-        this.spawnInterval = setInterval(() => this.spawnRaindrop(), 2500);
-        this._startAnimLoopDown();
-    },
-
-    spawnRaindrop() {
-        if (!this.isPlaying) return;
-        const area = document.getElementById('balloon-area');
-        const char = this.randomChar();
-        const el = document.createElement('div');
-        el.className = 'raindrop';
-        el.textContent = char;
-        el.style.backgroundColor = this.randomColor();
-        el.style.left = `${30 + Math.random() * (area.clientWidth - 80)}px`;
-        el.style.top = '-60px';
-        area.appendChild(el);
-        this.items.push({ el, char, y: -60, speed: 30 + Math.random() * 20 });
-    },
-
-    handleRainInput(ch) {
-        const idx = this._findHighest(ch);
-        if (idx !== -1) {
-            this._popItem(idx);
-        } else {
-            audioManager.playError();
-        }
-    },
-
-    // ===========================================================
-    //  GAME 3: SPEED TYPING ⚡
-    //  One letter at a time in the center. Type it fast!
-    // ===========================================================
-    _speedTimeout: null,
-
-    startSpeed() {
-        this._showNextSpeedChar();
-    },
-
-    _showNextSpeedChar() {
-        if (!this.isPlaying) return;
-        const area = document.getElementById('balloon-area');
-        // Clear old
-        area.innerHTML = '';
-        this.items = [];
-
-        const char = this.randomChar();
-        const el = document.createElement('div');
-        el.className = 'speed-char';
-        el.textContent = char;
-        area.appendChild(el);
-        this.items = [{ el, char }];
-
-        // Timeout: if not typed in 5 seconds, show next
-        this._speedTimeout = setTimeout(() => {
-            if (this.isPlaying && this.items.length > 0) {
-                this.items[0].el.classList.add('missed');
-                setTimeout(() => this._showNextSpeedChar(), 300);
+        // find lowest balloon with matching char
+        let idx = -1, lowest = 9999;
+        for (let i = 0; i < this.items.length; i++) {
+            if (this.items[i].char === ch && this.items[i].y < lowest) {
+                lowest = this.items[i].y;
+                idx = i;
             }
-        }, 5000);
-    },
-
-    handleSpeedInput(ch) {
-        if (this.items.length === 0) return;
-        const item = this.items[0];
-        if (ch === item.char) {
-            clearTimeout(this._speedTimeout);
+        }
+        
+        if (idx !== -1) {
+            const b = this.items[idx];
             audioManager.playPop();
-            item.el.classList.add('popped');
+            b.el.classList.add('popped');
+            this.items.splice(idx, 1);
+            setTimeout(() => { if (b.el.parentNode) b.el.parentNode.removeChild(b.el); }, 200);
             this.score++;
             this.updateScore();
-            if (this.score < this.targetScore) {
-                setTimeout(() => this._showNextSpeedChar(), 400);
-            }
         } else {
             audioManager.playError();
-            item.el.classList.add('shake');
-            setTimeout(() => item.el.classList.remove('shake'), 300);
         }
     },
 
     // ===========================================================
-    //  GAME 4: TARGET PRACTICE 🎯
-    //  Letters appear at random positions. Type to hit the target.
+    //  GAME 2: WHACK-A-MOLE 🐹
     // ===========================================================
-    startTarget() {
-        this.spawnInterval = setInterval(() => this.spawnTarget(), 2800);
-        // Spawn first one immediately
-        this.spawnTarget();
+    _moleHoles: [],
+    startMole() {
+        const area = document.getElementById('balloon-area');
+        area.style.background = 'linear-gradient(180deg, #87CEEB, #90EE90)';
+        
+        const grid = document.createElement('div');
+        grid.className = 'mole-grid';
+        this._moleHoles = [];
+        
+        // Create 4 holes
+        for(let i=0; i<4; i++) {
+            const hole = document.createElement('div');
+            hole.className = 'mole-hole';
+            const mole = document.createElement('div');
+            mole.className = 'mole';
+            const letter = document.createElement('div');
+            letter.className = 'mole-letter';
+            letter.textContent = '';
+            mole.appendChild(letter);
+            hole.appendChild(mole);
+            grid.appendChild(hole);
+            this._moleHoles.push({ el: mole, letterEl: letter, active: false, char: '' });
+        }
+        area.appendChild(grid);
+        
+        this.spawnInterval = setInterval(() => this.spawnMole(), 2000);
+        this.spawnMole();
     },
 
-    spawnTarget() {
+    spawnMole() {
         if (!this.isPlaying) return;
-        // Max 4 targets on screen
-        if (this.items.length >= 4) return;
+        const available = this._moleHoles.filter(h => !h.active);
+        if (available.length === 0) return;
+        
+        const hole = available[Math.floor(Math.random() * available.length)];
+        const char = this.randomChar();
+        
+        hole.active = true;
+        hole.char = char;
+        hole.letterEl.textContent = char;
+        hole.el.classList.remove('whacked');
+        hole.el.classList.add('up');
+        
+        hole.timeout = setTimeout(() => {
+            if (hole.active) {
+                hole.el.classList.remove('up');
+                hole.active = false;
+            }
+        }, 3000);
+    },
 
+    handleMoleInput(ch) {
+        let hit = false;
+        for (let i = 0; i < this._moleHoles.length; i++) {
+            const hole = this._moleHoles[i];
+            if (hole.active && hole.char === ch) {
+                hit = true;
+                hole.active = false;
+                clearTimeout(hole.timeout);
+                audioManager.playPop(); // Hammer whack sound
+                
+                hole.el.classList.add('whacked');
+                setTimeout(() => {
+                    hole.el.classList.remove('up');
+                }, 150);
+                
+                this.score++;
+                this.updateScore();
+                break;
+            }
+        }
+        if (!hit) audioManager.playError();
+    },
+
+    // ===========================================================
+    //  GAME 3: TYPING RUNNER 🐆
+    // ===========================================================
+    _runnerChar: null,
+    startRunner() {
+        const area = document.getElementById('balloon-area');
+        area.style.background = 'linear-gradient(180deg, #B0E0E6, #FFDAB9)';
+        
+        const track = document.createElement('div');
+        track.className = 'runner-track';
+        area.appendChild(track);
+        
+        this._runnerChar = document.createElement('div');
+        this._runnerChar.className = 'runner-char';
+        area.appendChild(this._runnerChar);
+        
+        this.spawnInterval = setInterval(() => this.spawnHurdle(), 3000);
+        
+        this._startAnimLoop((delta) => {
+            for (let i = this.items.length - 1; i >= 0; i--) {
+                const b = this.items[i];
+                if (!b.cleared) {
+                    b.x -= b.speed * delta;
+                    b.el.style.left = `${b.x}px`;
+                    
+                    // Hit the player?
+                    if (b.x < 150 && b.x > 50) {
+                        b.cleared = true; // effectively skipped/hit
+                        audioManager.playError();
+                        this._runnerChar.classList.add('stumble');
+                        setTimeout(() => this._runnerChar.classList.remove('stumble'), 300);
+                        
+                        b.el.classList.add('cleared'); // knock it over
+                        setTimeout(() => { if(b.el.parentNode) b.el.parentNode.removeChild(b.el); }, 500);
+                        this.items.splice(i, 1);
+                    }
+                }
+            }
+        });
+    },
+
+    spawnHurdle() {
+        if (!this.isPlaying) return;
         const area = document.getElementById('balloon-area');
         const char = this.randomChar();
         const el = document.createElement('div');
-        el.className = 'target-char';
+        el.className = 'hurdle';
         el.textContent = char;
-        el.style.backgroundColor = this.randomColor();
-
-        const maxX = Math.max(60, area.clientWidth - 100);
-        const maxY = Math.max(60, area.clientHeight - 100);
-        el.style.left = `${30 + Math.random() * maxX}px`;
-        el.style.top = `${30 + Math.random() * maxY}px`;
+        
+        const startX = area.clientWidth;
+        el.style.left = `${startX}px`;
         area.appendChild(el);
-
-        const item = { el, char };
-
-        // Auto-remove after 6 seconds
-        item.timeout = setTimeout(() => {
-            if (el.parentNode) {
-                el.classList.add('missed');
-                setTimeout(() => {
-                    if (el.parentNode) el.parentNode.removeChild(el);
-                    const i = this.items.indexOf(item);
-                    if (i !== -1) this.items.splice(i, 1);
-                }, 300);
-            }
-        }, 6000);
-
-        this.items.push(item);
+        
+        this.items.push({ el, char, x: startX, speed: 100 + Math.random() * 50, cleared: false });
     },
 
-    handleTargetInput(ch) {
-        const idx = this.items.findIndex(i => i.char === ch);
+    handleRunnerInput(ch) {
+        // Find leftmost uncleared hurdle
+        let idx = -1, leftmost = 9999;
+        for (let i = 0; i < this.items.length; i++) {
+            if (!this.items[i].cleared && this.items[i].char === ch && this.items[i].x < leftmost) {
+                leftmost = this.items[i].x;
+                idx = i;
+            }
+        }
+        
         if (idx !== -1) {
-            const item = this.items[idx];
-            if (item.timeout) clearTimeout(item.timeout);
-            audioManager.playPop();
-            item.el.classList.add('popped');
+            const b = this.items[idx];
+            b.cleared = true;
+            audioManager.playPop(); // jump sound
+            
+            // Jump animation
+            this._runnerChar.classList.add('jump');
+            setTimeout(() => this._runnerChar.classList.remove('jump'), 400);
+            
+            b.el.classList.add('cleared');
+            setTimeout(() => { if(b.el.parentNode) b.el.parentNode.removeChild(b.el); }, 300);
             this.items.splice(idx, 1);
-            setTimeout(() => {
-                if (item.el.parentNode) item.el.parentNode.removeChild(item.el);
-            }, 200);
+            
+            this.score++;
+            this.updateScore();
+        } else {
+            audioManager.playError();
+        }
+    },
+
+    // ===========================================================
+    //  GAME 4: SPACE DEFENDER 🛸
+    // ===========================================================
+    _spaceShip: null,
+    startSpace() {
+        const area = document.getElementById('balloon-area');
+        area.classList.add('space-bg');
+        area.style.background = ''; // Managed by CSS class
+        
+        this._spaceShip = document.createElement('div');
+        this._spaceShip.className = 'space-ship';
+        area.appendChild(this._spaceShip);
+        
+        this.spawnInterval = setInterval(() => this.spawnAsteroid(), 2500);
+        
+        this._startAnimLoop((delta) => {
+            const shipX = area.clientWidth / 2;
+            const shipY = area.clientHeight - 80;
+            
+            for (let i = this.items.length - 1; i >= 0; i--) {
+                const b = this.items[i];
+                if (b.destroyed) continue;
+                
+                // Move towards ship
+                const dx = shipX - b.x;
+                const dy = shipY - b.y;
+                const dist = Math.sqrt(dx*dx + dy*dy);
+                
+                if (dist < 60) {
+                    // Hit ship!
+                    b.destroyed = true;
+                    audioManager.playError();
+                    this._spaceShip.style.filter = 'brightness(2) drop-shadow(0 0 20px red)';
+                    setTimeout(() => this._spaceShip.style.filter = '', 200);
+                    
+                    b.el.classList.add('destroyed');
+                    setTimeout(() => { if(b.el.parentNode) b.el.parentNode.removeChild(b.el); }, 300);
+                    this.items.splice(i, 1);
+                    continue;
+                }
+                
+                const vx = (dx / dist) * b.speed;
+                const vy = (dy / dist) * b.speed;
+                
+                b.x += vx * delta;
+                b.y += vy * delta;
+                b.el.style.left = `${b.x}px`;
+                b.el.style.top = `${b.y}px`;
+            }
+        });
+    },
+
+    spawnAsteroid() {
+        if (!this.isPlaying) return;
+        const area = document.getElementById('balloon-area');
+        const char = this.randomChar();
+        const el = document.createElement('div');
+        el.className = 'asteroid';
+        const wrap = document.createElement('div');
+        wrap.className = 'letter-wrap';
+        wrap.textContent = char;
+        el.appendChild(wrap);
+        
+        // Spawn from top, top-left, top-right randomly
+        let startX, startY;
+        const edge = Math.random();
+        if (edge < 0.33) {
+            startX = -50; startY = Math.random() * 200;
+        } else if (edge < 0.66) {
+            startX = area.clientWidth + 50; startY = Math.random() * 200;
+        } else {
+            startX = Math.random() * area.clientWidth; startY = -50;
+        }
+        
+        el.style.left = `${startX}px`;
+        el.style.top = `${startY}px`;
+        area.appendChild(el);
+        
+        this.items.push({ el, char, x: startX, y: startY, speed: 40 + Math.random() * 30, destroyed: false });
+    },
+
+    handleSpaceInput(ch) {
+        // Find closest asteroid
+        let idx = -1, closest = 999999;
+        const area = document.getElementById('balloon-area');
+        const shipX = area.clientWidth / 2;
+        const shipY = area.clientHeight - 80;
+        
+        for (let i = 0; i < this.items.length; i++) {
+            const b = this.items[i];
+            if (!b.destroyed && b.char === ch) {
+                const dx = shipX - b.x;
+                const dy = shipY - b.y;
+                const dist = Math.sqrt(dx*dx + dy*dy);
+                if (dist < closest) {
+                    closest = dist;
+                    idx = i;
+                }
+            }
+        }
+        
+        if (idx !== -1) {
+            const b = this.items[idx];
+            b.destroyed = true;
+            audioManager.playPop(); // Laser sound conceptually
+            
+            // Draw laser line
+            const laser = document.createElement('div');
+            laser.className = 'laser';
+            
+            const dx = b.x - shipX;
+            const dy = b.y - (shipY - 60); // from top of ship
+            const length = Math.sqrt(dx*dx + dy*dy);
+            const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+            
+            laser.style.height = `${length}px`;
+            laser.style.left = `${shipX}px`;
+            laser.style.top = `${shipY - 60 + dy/2 - length/2}px`;
+            // Math for laser rotation
+            laser.style.transform = `rotate(${angle + 90}deg)`;
+            
+            area.appendChild(laser);
+            setTimeout(() => { if(laser.parentNode) laser.parentNode.removeChild(laser); }, 200);
+            
+            b.el.classList.add('destroyed');
+            setTimeout(() => { if(b.el.parentNode) b.el.parentNode.removeChild(b.el); }, 300);
+            this.items.splice(idx, 1);
+            
             this.score++;
             this.updateScore();
         } else {
@@ -268,87 +447,15 @@ const gameMode = {
     // ===========================================================
     //  SHARED HELPERS
     // ===========================================================
-    _startAnimLoop() {
+    _startAnimLoop(updateFn) {
         let lastTime = performance.now();
         const loop = (time) => {
             if (!this.isPlaying) return;
             const delta = (time - lastTime) / 1000;
             lastTime = time;
-            this._updateBalloons(delta);
+            updateFn(delta);
             this.gameLoop = requestAnimationFrame(loop);
         };
         this.gameLoop = requestAnimationFrame(loop);
-    },
-
-    _updateBalloons(delta) {
-        const areaHeight = document.getElementById('balloon-area').clientHeight;
-        for (let i = this.items.length - 1; i >= 0; i--) {
-            const b = this.items[i];
-            b.y += b.speed * delta;
-            b.el.style.bottom = `${b.y}px`;
-            if (b.y > areaHeight + 100) {
-                if (b.el.parentNode) b.el.parentNode.removeChild(b.el);
-                this.items.splice(i, 1);
-            }
-        }
-    },
-
-    _startAnimLoopDown() {
-        let lastTime = performance.now();
-        const loop = (time) => {
-            if (!this.isPlaying) return;
-            const delta = (time - lastTime) / 1000;
-            lastTime = time;
-            this._updateRaindrops(delta);
-            this.gameLoop = requestAnimationFrame(loop);
-        };
-        this.gameLoop = requestAnimationFrame(loop);
-    },
-
-    _updateRaindrops(delta) {
-        const areaHeight = document.getElementById('balloon-area').clientHeight;
-        for (let i = this.items.length - 1; i >= 0; i--) {
-            const b = this.items[i];
-            b.y += b.speed * delta;
-            b.el.style.top = `${b.y}px`;
-            if (b.y > areaHeight + 60) {
-                if (b.el.parentNode) b.el.parentNode.removeChild(b.el);
-                this.items.splice(i, 1);
-            }
-        }
-    },
-
-    _findLowest(ch) {
-        let idx = -1, lowest = 9999;
-        for (let i = 0; i < this.items.length; i++) {
-            if (this.items[i].char === ch && this.items[i].y < lowest) {
-                lowest = this.items[i].y;
-                idx = i;
-            }
-        }
-        return idx;
-    },
-
-    _findHighest(ch) {
-        let idx = -1, highest = -9999;
-        for (let i = 0; i < this.items.length; i++) {
-            if (this.items[i].char === ch && this.items[i].y > highest) {
-                highest = this.items[i].y;
-                idx = i;
-            }
-        }
-        return idx;
-    },
-
-    _popItem(idx) {
-        const b = this.items[idx];
-        audioManager.playPop();
-        b.el.classList.add('popped');
-        this.items.splice(idx, 1);
-        setTimeout(() => {
-            if (b.el.parentNode) b.el.parentNode.removeChild(b.el);
-        }, 200);
-        this.score++;
-        this.updateScore();
-    },
+    }
 };
