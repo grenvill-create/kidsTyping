@@ -7,6 +7,8 @@ const gameState = {
     // Per-lesson progress: { lessonId: { stars: 0-3, bestAccuracy: 0, bestWpm: 0 } }
     progress: {},
 
+    globalUnlock: false,
+
     init() {
         try {
             const saved = localStorage.getItem('kidsTypingV2');
@@ -14,6 +16,7 @@ const gameState = {
                 const data = JSON.parse(saved);
                 this.progress = data.progress || {};
                 this.showHands = data.showHands !== undefined ? data.showHands : true;
+                this.globalUnlock = data.globalUnlock || false;
             }
         } catch (e) {
             console.error('Load error', e);
@@ -24,7 +27,8 @@ const gameState = {
         try {
             localStorage.setItem('kidsTypingV2', JSON.stringify({
                 progress: this.progress,
-                showHands: this.showHands
+                showHands: this.showHands,
+                globalUnlock: this.globalUnlock
             }));
         } catch (e) {
             console.error('Save error', e);
@@ -32,6 +36,7 @@ const gameState = {
     },
 
     isLessonUnlocked(lessonId) {
+        if (this.globalUnlock) return true;
         if (lessonId === 1) return true;
         if (this.progress[lessonId] && this.progress[lessonId].forceUnlocked) return true;
 
@@ -45,17 +50,14 @@ const gameState = {
     },
 
     forceUnlock(lessonId) {
-        if (!this.progress[lessonId]) {
-            this.progress[lessonId] = {
-                stars: 0, bestAccuracy: 0, bestWpm: 0
-            };
-        }
-        this.progress[lessonId].forceUnlocked = true;
+        // Unlock all levels when parent gate is passed for any level
+        this.globalUnlock = true;
         this.save();
     },
 
     resetAll() {
         this.progress = {};
+        this.globalUnlock = false;
         this.save();
     },
 
@@ -74,7 +76,8 @@ const gameState = {
             this.progress[lessonId] = {
                 stars: stars,
                 bestAccuracy: accuracy,
-                bestWpm: wpm
+                bestWpm: wpm,
+                forceUnlocked: existing ? existing.forceUnlocked : false
             };
         } else {
             if (accuracy > existing.bestAccuracy) existing.bestAccuracy = accuracy;
