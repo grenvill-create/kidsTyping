@@ -210,6 +210,14 @@ const gameMode = {
                 clearTimeout(hole.timeout);
                 audioManager.playPop(); // Hammer whack sound
                 
+                // Spawn Hammer animation
+                const hammer = document.createElement('div');
+                hammer.className = 'hammer';
+                hole.el.parentElement.appendChild(hammer);
+                setTimeout(() => {
+                    if (hammer.parentNode) hammer.parentNode.removeChild(hammer);
+                }, 300);
+
                 hole.el.classList.add('whacked');
                 setTimeout(() => {
                     hole.el.classList.remove('up');

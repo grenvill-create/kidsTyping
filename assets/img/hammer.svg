@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="wood" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#8b4513" />
+      <stop offset="50%" stop-color="#d2691e" />
+      <stop offset="100%" stop-color="#8b4513" />
+    </linearGradient>
+    <linearGradient id="metal" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#bdc3c7" />
+      <stop offset="100%" stop-color="#7f8c8d" />
+    </linearGradient>
+    <linearGradient id="redPlastic" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ff7675" />
+      <stop offset="100%" stop-color="#d63031" />
+    </linearGradient>
+  </defs>
+  <!-- Handle -->
+  <rect x="42" y="30" width="16" height="60" rx="8" fill="url(#wood)" />
+  <rect x="42" y="80" width="16" height="15" rx="5" fill="#555" />
+  <!-- Head body -->
+  <rect x="25" y="10" width="50" height="30" rx="5" fill="url(#metal)" />
+  <!-- Striking faces -->
+  <rect x="15" y="12" width="20" height="26" rx="3" fill="url(#redPlastic)" />
+  <rect x="65" y="12" width="20" height="26" rx="3" fill="url(#redPlastic)" />
+</svg>

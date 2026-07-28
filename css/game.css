@@ -140,6 +140,26 @@
     text-shadow: none;
 }
 
+.hammer {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    background-image: url('../assets/img/hammer.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    z-index: 10;
+    top: -20px;
+    right: -20px;
+    transform-origin: bottom right;
+    transform: rotate(45deg);
+    animation: whackAnim 0.15s ease-in forwards;
+}
+
+@keyframes whackAnim {
+    0% { transform: rotate(45deg); }
+    100% { transform: rotate(-45deg); }
+}
+
 /* ===== GAME 3: Typing Runner 🏎️ ===== */
 .runner-track {
     position: absolute;
