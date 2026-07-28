@@ -96,12 +96,15 @@ const app = {
 
     nextLesson() {
         this.hideModals();
-        const nextId = gameState.currentLessonId + 1;
-        if (nextId <= lessons.length && gameState.isLessonUnlocked(nextId)) {
-            this.startLesson(nextId);
-        } else {
-            this.goHome();
+        const currentIndex = lessons.findIndex(l => l.id === gameState.currentLessonId);
+        if (currentIndex !== -1 && currentIndex + 1 < lessons.length) {
+            const nextId = lessons[currentIndex + 1].id;
+            if (gameState.isLessonUnlocked(nextId)) {
+                this.startLesson(nextId);
+                return;
+            }
         }
+        this.goHome();
     },
 
     restartLesson() {

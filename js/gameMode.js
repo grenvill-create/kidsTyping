@@ -141,10 +141,11 @@ const gameMode = {
         // 100% accuracy equivalent for games, 3 stars
         gameState.saveResult(this.lesson.id, 100, 30);
         
-        rewardsManager.showResult({
-            lessonId: this.lesson.id,
-            accuracy: 100,
-            wpm: 30
-        });
+        // Immediately go to next lesson after a short delay for the sound to play
+        setTimeout(() => {
+            if (window.app) {
+                app.nextLesson();
+            }
+        }, 1500);
     }
 };
