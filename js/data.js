@@ -332,3 +332,20 @@ const lessons = [
         ]
     },
 ];
+
+/* ---- Inject Game Nodes ---- */
+const gameIntervals = [5, 10, 15, 20, 25, 30];
+for (let i = gameIntervals.length - 1; i >= 0; i--) {
+    const targetId = gameIntervals[i];
+    const idx = lessons.findIndex(l => l.id === targetId);
+    if (idx !== -1) {
+        lessons.splice(idx + 1, 0, {
+            id: 'g' + targetId,
+            type: 'game',
+            gameType: 'balloon',
+            title: '?? Balloon Pop ' + (i + 1),
+            chars: lessons[idx].chars
+        });
+    }
+}
+

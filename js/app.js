@@ -39,11 +39,13 @@ const app = {
                 }
             }
 
+            const isGame = lesson.type === 'game';
             card.innerHTML = `
-                <div class="lesson-num">${unlocked ? lesson.id : '🔒'}</div>
+                <div class="lesson-num">${unlocked ? (isGame ? '🎮' : lesson.id) : '🔒'}</div>
                 <div class="lesson-keys">${lesson.title}</div>
                 ${starsHtml ? `<div class="lesson-stars">${starsHtml}</div>` : ''}
             `;
+            if (isGame) card.classList.add('game-card');
             container.appendChild(card);
         });
     },
@@ -58,14 +60,25 @@ const app = {
         document.getElementById('stat-accuracy').textContent = 'Accuracy: --';
         document.getElementById('stat-wpm').textContent = 'WPM: --';
 
-        this.switchView('game-view');
-        typingMode.start(lesson);
+        this.switchView(lesson.type === 'game' ? 'balloon-game-view' : 'game-view');
+        
+        if (lesson.type === 'game') {
+            gameMode.start(lesson);
+        } else {
+            typingMode.start(lesson);
+        }
     },
 
     handleInput(ch, shiftKey) {
         if (!gameState.currentLessonId) return;
-        // For simplicity pass the raw character
-        typingMode.handleInput(ch);
+        const lesson = lessons.find(l => l.id === gameState.currentLessonId);
+        if (!lesson) return;
+        
+        if (lesson.type === 'game') {
+            if (window.gameMode) gameMode.handleInput(ch);
+        } else {
+            typingMode.handleInput(ch);
+        }
     },
 
     lessonComplete(accuracy, wpm) {

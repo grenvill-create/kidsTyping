@@ -33,8 +33,13 @@ const gameState = {
 
     isLessonUnlocked(lessonId) {
         if (lessonId === 1) return true;
-        const prev = this.progress[lessonId - 1];
-        return prev && prev.stars > 0;
+        const idx = lessons.findIndex(l => l.id === lessonId);
+        if (idx > 0) {
+            const prevLessonId = lessons[idx - 1].id;
+            const prev = this.progress[prevLessonId];
+            return prev && prev.stars > 0;
+        }
+        return false;
     },
 
     getLessonStars(lessonId) {

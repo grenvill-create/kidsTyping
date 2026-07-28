@@ -1,0 +1,51 @@
+/* ===== Game Area ===== */
+.game-area {
+    flex: 1;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(180deg, var(--color-bg), var(--color-bg-surface));
+}
+
+.balloon {
+    position: absolute;
+    bottom: -100px;
+    width: 60px;
+    height: 75px;
+    border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2rem;
+    font-weight: 700;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    cursor: default;
+    transition: transform 0.1s;
+}
+
+/* Balloon string */
+.balloon::after {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    width: 2px;
+    height: 20px;
+    background: rgba(0,0,0,0.2);
+    transform: translateX(-50%);
+}
+
+.balloon.popped {
+    transform: scale(1.5);
+    opacity: 0;
+    transition: all 0.2s cubic-bezier(0.175,0.885,0.32,1.275);
+}
+
+/* Game Card Style */
+.lesson-card.game-card {
+    background: linear-gradient(135deg, var(--color-accent-soft), #ffe4e6);
+    border-color: var(--color-accent);
+}
+.lesson-card.game-card .lesson-num {
+    font-size: 2.2rem;
+}

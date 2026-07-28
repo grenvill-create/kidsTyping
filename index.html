@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="css/animations.css">
     <link rel="stylesheet" href="css/components.css">
     <link rel="stylesheet" href="css/keyboard.css">
+    <link rel="stylesheet" href="css/game.css">
 </head>
 <body>
     <div id="app">
@@ -79,6 +80,20 @@
             </div>
         </section>
 
+        <!-- ===== GAME VIEW: Balloon Pop ===== -->
+        <section id="balloon-game-view" class="view hidden">
+            <div class="game-header">
+                <button class="btn btn-secondary btn-icon" onclick="app.switchView('home-view')">◀</button>
+                <div class="lesson-title" id="game-title">Balloon Pop</div>
+                <div class="stats-bar">
+                    <span class="stat" id="game-score">Score: 0 / 10</span>
+                </div>
+            </div>
+            <main class="game-area" id="balloon-area">
+                <!-- Balloons spawn here -->
+            </main>
+        </section>
+
         <!-- ===== MODALS ===== -->
         <div id="modal-overlay" class="modal-overlay hidden"></div>
 
@@ -112,6 +127,7 @@
     <script src="js/audio.js"></script>
     <script src="js/keyboard.js"></script>
     <script src="js/typingMode.js"></script>
+    <script src="js/gameMode.js"></script>
     <script src="js/rewards.js"></script>
     <script src="js/app.js"></script>
 </body>
