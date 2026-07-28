@@ -331,21 +331,330 @@ const lessons = [
             'How quickly jumping zebras vex!',
         ]
     },
+
+    // ===== Stage 6: Review & Reinforce =====
+    {
+        id: 31, title: 'Home Row Mastery', newKeys: [],
+        chars: 'fjdksla;gh',
+        drills: [
+            'flash flash dash dash lash lash',
+            'a glad lad had a salad half;',
+            'shall dad add glass flask;',
+            'hash gash lash flash dash;',
+        ]
+    },
+    {
+        id: 32, title: 'Top Row Mastery', newKeys: [],
+        chars: 'qwertyuiop',
+        drills: [
+            'quite pretty poetry wire type',
+            'you write your quiet report',
+            'we power up your equipment',
+            'ripe fruit quip true require',
+        ]
+    },
+    {
+        id: 33, title: 'Bottom Row Mastery', newKeys: [],
+        chars: 'zxcvbnm,./',
+        drills: [
+            'zinc box cave next combine',
+            'buzz Mexico vacant zinc',
+            'Mexico. combine, zinc/box.',
+            'vacant, combine, maximize.',
+        ]
+    },
+    {
+        id: 34, title: 'Number Row Mastery', newKeys: [],
+        chars: '1234567890',
+        drills: [
+            '10 20 30 40 50 60 70 80 90',
+            '123 456 789 012 345 678 901',
+            '99 88 77 66 55 44 33 22 11',
+        ]
+    },
+    {
+        id: 35, title: 'Left Hand Focus', newKeys: [],
+        chars: 'qwertasdfgzxcvb12345',
+        drills: [
+            'great fast west red raft beast',
+            'exact grace brave create fact',
+            'extract treat craft draft vest',
+        ]
+    },
+    {
+        id: 36, title: 'Right Hand Focus', newKeys: [],
+        chars: 'yuiophjkl;nm,./67890',
+        drills: [
+            'only link join him pull milk',
+            'upon you; monopoly hook lion;',
+            'opinion million union; junior',
+        ]
+    },
+
+    // ===== Stage 7: Common Words =====
+    {
+        id: 37, title: 'Top 20 Words', newKeys: [],
+        chars: '',
+        drills: [
+            'the of and a to in is you',
+            'that it he was for on are',
+            'as with his they I at be this',
+        ]
+    },
+    {
+        id: 38, title: 'Action Words', newKeys: [],
+        chars: '',
+        drills: [
+            'run jump walk talk play read',
+            'write sing dance think swim',
+            'climb push pull open close look',
+            'listen help make build learn fly',
+        ]
+    },
+    {
+        id: 39, title: 'Describing Words', newKeys: [],
+        chars: '',
+        drills: [
+            'big small tall short fast slow',
+            'happy sad funny brave kind smart',
+            'bright dark warm cool fresh strong',
+        ]
+    },
+    {
+        id: 40, title: 'School Words', newKeys: [],
+        chars: '',
+        drills: [
+            'teacher student pencil eraser',
+            'classroom homework library book',
+            'science history math English art',
+            'computer keyboard mouse screen',
+        ]
+    },
+    {
+        id: 41, title: 'Food Words', newKeys: [],
+        chars: '',
+        drills: [
+            'apple banana orange grape cherry',
+            'pizza bread butter cheese milk',
+            'chicken salad sandwich cookie cake',
+        ]
+    },
+    {
+        id: 42, title: 'Nature Words', newKeys: [],
+        chars: '',
+        drills: [
+            'mountain river forest ocean sky',
+            'flower garden rainbow sunshine cloud',
+            'butterfly dolphin elephant penguin',
+        ]
+    },
+
+    // ===== Stage 8: Short Paragraphs =====
+    {
+        id: 43, title: 'My Pet', newKeys: [],
+        chars: '',
+        drills: [
+            'I have a small cat. Her name is Mimi.',
+            'She likes to play with a red ball.',
+            'Mimi sleeps on my bed every night.',
+        ]
+    },
+    {
+        id: 44, title: 'At the Park', newKeys: [],
+        chars: '',
+        drills: [
+            'We go to the park on Sunday.',
+            'I like to swing and slide there.',
+            'My friend and I play catch too.',
+            'The park is our favorite place.',
+        ]
+    },
+    {
+        id: 45, title: 'My Family', newKeys: [],
+        chars: '',
+        drills: [
+            'My family has four people in it.',
+            'Dad cooks dinner every evening.',
+            'Mom reads stories before bed.',
+            'My sister and I do homework together.',
+        ]
+    },
+    {
+        id: 46, title: 'Weather Report', newKeys: [],
+        chars: '',
+        drills: [
+            'Today is sunny and warm outside.',
+            'The wind blows gently through trees.',
+            'Tomorrow it may rain in the afternoon.',
+            'Remember to bring your umbrella!',
+        ]
+    },
+    {
+        id: 47, title: 'Birthday Party', newKeys: [],
+        chars: '',
+        drills: [
+            'Today is my birthday! I am so happy.',
+            'We have a big cake with 7 candles.',
+            'My friends gave me nice presents.',
+            'We played games until it was dark.',
+        ]
+    },
+    {
+        id: 48, title: 'Going to School', newKeys: [],
+        chars: '',
+        drills: [
+            'I wake up at 7 o\'clock every morning.',
+            'I brush my teeth and eat breakfast.',
+            'The school bus arrives at 8 o\'clock.',
+            'My favorite class is art and music!',
+        ]
+    },
+
+    // ===== Stage 9: Mixed Challenge =====
+    {
+        id: 49, title: 'Numbers in Sentences', newKeys: [],
+        chars: '',
+        drills: [
+            'There are 26 letters in English.',
+            'A year has 12 months and 365 days.',
+            'She scored 98 out of 100 on her test!',
+        ]
+    },
+    {
+        id: 50, title: 'Punctuation Practice', newKeys: [],
+        chars: '',
+        drills: [
+            'Hello! How are you doing today?',
+            'Wow, that\'s amazing! Can you believe it?',
+            'Yes, I can; no, he can\'t. Why not?',
+            'Wait... are you sure? Let\'s go!',
+        ]
+    },
+    {
+        id: 51, title: 'Capital Letters Mix', newKeys: [],
+        chars: '',
+        drills: [
+            'New York, London, Tokyo, and Paris.',
+            'January, February, March, April.',
+            'Monday is the start of the week.',
+            'Dr. Smith lives on Oak Street.',
+        ]
+    },
+    {
+        id: 52, title: 'Email & Web Words', newKeys: [],
+        chars: '',
+        drills: [
+            'Send me an email at hello today.',
+            'Visit the website for more info.',
+            'Click the link and download it.',
+            'Type your password carefully.',
+        ]
+    },
+    {
+        id: 53, title: 'Mixed Symbols', newKeys: [],
+        chars: '',
+        drills: [
+            'Price: 5 dollars and 99 cents.',
+            'Call 123-456-7890 for details.',
+            'Open from 9:00 to 5:00 daily.',
+            'Score: 15/20. Grade: A. Great!',
+        ]
+    },
+    {
+        id: 54, title: 'Dialogue Practice', newKeys: [],
+        chars: '',
+        drills: [
+            '"Hi there!" said Tom happily.',
+            '"What time is it?" asked Mary.',
+            '"It\'s 3 o\'clock," replied Dad.',
+            '"Let\'s go play outside!" she said.',
+        ]
+    },
+
+    // ===== Stage 10: Speed Challenge =====
+    {
+        id: 55, title: 'Tongue Twisters 1', newKeys: [],
+        chars: '',
+        drills: [
+            'She sells seashells by the seashore.',
+            'Peter Piper picked a peck of peppers.',
+            'How much wood would a woodchuck chuck?',
+        ]
+    },
+    {
+        id: 56, title: 'Tongue Twisters 2', newKeys: [],
+        chars: '',
+        drills: [
+            'Betty Botter bought some butter.',
+            'Red lorry, yellow lorry, red lorry.',
+            'Fuzzy Wuzzy was a bear. Fuzzy had no hair.',
+        ]
+    },
+    {
+        id: 57, title: 'Famous Quotes', newKeys: [],
+        chars: '',
+        drills: [
+            'To be or not to be, that is the question.',
+            'All you need is love. Love is all you need.',
+            'The only way to do great work is to love it.',
+        ]
+    },
+    {
+        id: 58, title: 'Story Paragraph', newKeys: [],
+        chars: '',
+        drills: [
+            'Once upon a time, in a land far away,',
+            'there lived a brave young knight.',
+            'He set out on a quest to find the golden key.',
+            'Along the way, he made many friends.',
+        ]
+    },
+    {
+        id: 59, title: 'Science Fun Facts', newKeys: [],
+        chars: '',
+        drills: [
+            'The Earth orbits the Sun in 365 days.',
+            'Light travels at 300,000 km per second.',
+            'Water boils at 100 degrees Celsius.',
+            'The human body has 206 bones inside.',
+        ]
+    },
+    {
+        id: 60, title: 'Grand Finale!', newKeys: [],
+        chars: '',
+        drills: [
+            'Congratulations! You have learned to type!',
+            'The quick brown fox jumps over the lazy dog.',
+            'Pack my box with five dozen liquor jugs.',
+            'How vexingly quick daft zebras jump!',
+            'You are now a typing champion! Well done!',
+        ]
+    },
 ];
 
 /* ---- Inject Game Nodes ---- */
-const gameIntervals = [5, 10, 15, 20, 25, 30];
-for (let i = gameIntervals.length - 1; i >= 0; i--) {
-    const targetId = gameIntervals[i];
-    const idx = lessons.findIndex(l => l.id === targetId);
-    if (idx !== -1) {
-        lessons.splice(idx + 1, 0, {
-            id: 'g' + targetId,
-            type: 'game',
-            gameType: 'balloon',
-            title: '?? Balloon Pop ' + (i + 1),
-            chars: lessons[idx].chars
-        });
+const gameTypes = ['balloon', 'rain', 'speed', 'target'];
+const gameIcons = {balloon: '🎈', rain: '🌧️', speed: '⚡', target: '🎯'};
+const gameNames = {balloon: 'Balloon Pop', rain: 'Rain Catcher', speed: 'Speed Typing', target: 'Target Practice'};
+
+// Insert a game after every 5th lesson
+const allLessonIds = lessons.map(l => l.id);
+let gameIndex = 0;
+for (let i = 0; i < allLessonIds.length; i++) {
+    const lid = allLessonIds[i];
+    if (typeof lid === 'number' && lid % 5 === 0) {
+        const spliceIdx = lessons.findIndex(l => l.id === lid);
+        if (spliceIdx !== -1) {
+            const gt = gameTypes[gameIndex % gameTypes.length];
+            lessons.splice(spliceIdx + 1, 0, {
+                id: 'g' + lid,
+                type: 'game',
+                gameType: gt,
+                title: gameIcons[gt] + ' ' + gameNames[gt],
+                chars: lessons[spliceIdx].chars
+            });
+            gameIndex++;
+        }
     }
 }
 

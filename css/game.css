@@ -6,6 +6,7 @@
     background: linear-gradient(180deg, var(--color-bg), var(--color-bg-surface));
 }
 
+/* ===== GAME 1: Balloon Pop 🎈 ===== */
 .balloon {
     position: absolute;
     bottom: -100px;
@@ -21,9 +22,9 @@
     text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
     cursor: default;
     transition: transform 0.1s;
+    box-shadow: inset -3px -3px 8px rgba(0,0,0,0.15), 2px 2px 6px rgba(0,0,0,0.1);
 }
 
-/* Balloon string */
 .balloon::after {
     content: '';
     position: absolute;
@@ -41,7 +42,142 @@
     transition: all 0.2s cubic-bezier(0.175,0.885,0.32,1.275);
 }
 
-/* Game Card Style */
+/* ===== GAME 2: Rain Catcher 🌧️ ===== */
+.raindrop {
+    position: absolute;
+    width: 50px;
+    height: 60px;
+    border-radius: 50% 50% 50% 50% / 30% 30% 70% 70%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    cursor: default;
+    box-shadow: inset -2px -2px 6px rgba(0,0,0,0.15), 1px 3px 8px rgba(0,0,0,0.12);
+    animation: wobble 2s ease-in-out infinite;
+}
+
+@keyframes wobble {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+.raindrop.popped {
+    transform: scale(0.2);
+    opacity: 0;
+    transition: all 0.2s ease-out;
+}
+
+/* ===== GAME 3: Speed Typing ⚡ ===== */
+.speed-char {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: white;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    box-shadow: 0 8px 32px rgba(102,126,234,0.4), inset 0 -3px 6px rgba(0,0,0,0.15);
+    animation: pulseGlow 1.5s ease-in-out infinite;
+    cursor: default;
+}
+
+@keyframes pulseGlow {
+    0%, 100% { box-shadow: 0 8px 32px rgba(102,126,234,0.4); transform: translate(-50%, -50%) scale(1); }
+    50% { box-shadow: 0 12px 48px rgba(102,126,234,0.6); transform: translate(-50%, -50%) scale(1.05); }
+}
+
+.speed-char.popped {
+    animation: none;
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 0;
+    transition: all 0.25s cubic-bezier(0.175,0.885,0.32,1.275);
+}
+
+.speed-char.missed {
+    animation: none;
+    background: linear-gradient(135deg, #ccc, #999);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0.5;
+    transition: all 0.3s ease;
+}
+
+.speed-char.shake {
+    animation: shakeAnim 0.3s ease;
+}
+
+@keyframes shakeAnim {
+    0%, 100% { transform: translate(-50%, -50%); }
+    20% { transform: translate(calc(-50% + 10px), -50%); }
+    40% { transform: translate(calc(-50% - 10px), -50%); }
+    60% { transform: translate(calc(-50% + 6px), -50%); }
+    80% { transform: translate(calc(-50% - 6px), -50%); }
+}
+
+/* ===== GAME 4: Target Practice 🎯 ===== */
+.target-char {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    cursor: default;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15), inset 0 -2px 4px rgba(0,0,0,0.1);
+    animation: targetPop 0.3s cubic-bezier(0.175,0.885,0.32,1.275);
+    transition: transform 0.1s, opacity 0.1s;
+}
+
+/* Concentric ring decoration */
+.target-char::before {
+    content: '';
+    position: absolute;
+    inset: -6px;
+    border: 3px solid rgba(255,255,255,0.4);
+    border-radius: 50%;
+    animation: ringPulse 2s ease-in-out infinite;
+}
+
+@keyframes targetPop {
+    0% { transform: scale(0); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes ringPulse {
+    0%, 100% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.15); opacity: 0.2; }
+}
+
+.target-char.popped {
+    transform: scale(1.5);
+    opacity: 0;
+    transition: all 0.2s cubic-bezier(0.175,0.885,0.32,1.275);
+}
+
+.target-char.missed {
+    transform: scale(0.5);
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+/* ===== Game Card Style on Map ===== */
 .lesson-card.game-card {
     background: linear-gradient(135deg, var(--color-accent-soft), #ffe4e6);
     border-color: var(--color-accent);

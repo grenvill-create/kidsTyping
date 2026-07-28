@@ -44,8 +44,9 @@ const app = {
             }
 
             const isGame = lesson.type === 'game';
+            const gameIcon = isGame && typeof gameIcons !== 'undefined' ? (gameIcons[lesson.gameType] || '🎮') : '';
             card.innerHTML = `
-                <div class="lesson-num">${unlocked ? (isGame ? '🎮' : lesson.id) : '🔒'}</div>
+                <div class="lesson-num">${unlocked ? (isGame ? gameIcon : lesson.id) : '🔒'}</div>
                 <div class="lesson-keys">${lesson.title}</div>
                 ${starsHtml ? `<div class="lesson-stars">${starsHtml}</div>` : ''}
             `;
