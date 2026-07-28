@@ -634,8 +634,8 @@ const lessons = [
 
 /* ---- Inject Game Nodes ---- */
 const gameTypes = ['balloon', 'mole', 'runner', 'space'];
-const gameIcons = {balloon: '🎈', mole: '🐹', runner: '🐆', space: '🛸'};
-const gameNames = {balloon: 'Balloon Pop', mole: 'Whack-a-Mole', runner: 'Typing Runner', space: 'Space Defender'};
+const gameIcons = {balloon: '🎈', mole: '🐹', runner: '🏎️', space: '🛸'};
+const gameNames = {balloon: 'Balloon Pop', mole: 'Whack-a-Mole', runner: 'Kart Racer', space: 'Space Defender'};
 
 // Insert a game after every 5th lesson
 const allLessonIds = lessons.map(l => l.id);
@@ -646,12 +646,18 @@ for (let i = 0; i < allLessonIds.length; i++) {
         const spliceIdx = lessons.findIndex(l => l.id === lid);
         if (spliceIdx !== -1) {
             const gt = gameTypes[gameIndex % gameTypes.length];
+            
+            // Scale difficulty: Base 10 + 5 per 10 levels
+            const difficultyMultiplier = Math.floor(lid / 10);
+            const dynamicTarget = 10 + (difficultyMultiplier * 5);
+            
             lessons.splice(spliceIdx + 1, 0, {
                 id: 'g' + lid,
                 type: 'game',
                 gameType: gt,
                 title: gameIcons[gt] + ' ' + gameNames[gt],
-                chars: lessons[spliceIdx].chars
+                chars: lessons[spliceIdx].chars,
+                targetScore: dynamicTarget
             });
             gameIndex++;
         }

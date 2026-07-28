@@ -161,6 +161,25 @@
 }
 
 /* ===== GAME 3: Typing Runner 🏎️ ===== */
+.game-area.runner-bg {
+    background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 60%, #90EE90 100%) !important;
+    overflow: hidden;
+}
+
+/* Clouds background for parallax */
+.game-area.runner-bg::before {
+    content: '☁️ \u00A0 \u00A0 \u00A0 ☁️ \u00A0 \u00A0 \u00A0 \u00A0 \u00A0 ☁️';
+    position: absolute;
+    top: 20px;
+    left: 0;
+    width: 200%;
+    font-size: 3rem;
+    color: white;
+    opacity: 0.8;
+    animation: moveTrack 20s linear infinite;
+    pointer-events: none;
+}
+
 .runner-track {
     position: absolute;
     bottom: 40px;
@@ -185,7 +204,7 @@
     background-image: linear-gradient(90deg, #fbc531 50%, transparent 50%);
     background-size: 60px 100%;
     transform: translateY(-50%);
-    animation: moveTrack 0.5s linear infinite;
+    animation: moveTrack 0.3s linear infinite;
 }
 
 @keyframes moveTrack {
@@ -204,11 +223,24 @@
     background-repeat: no-repeat;
     background-position: bottom;
     z-index: 10;
-    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    /* Gentle bobbing while driving */
+    animation: kartBob 0.4s infinite alternate;
+}
+
+@keyframes kartBob {
+    0% { bottom: 50px; }
+    100% { bottom: 52px; }
 }
 
 .runner-char.jump {
-    transform: translateY(-100px) rotate(-10deg);
+    animation: kartJump 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes kartJump {
+    0% { transform: translateY(0) rotate(0deg); }
+    40% { transform: translateY(-120px) rotate(-15deg); }
+    60% { transform: translateY(-120px) rotate(15deg); }
+    100% { transform: translateY(0) rotate(360deg); } /* Full flip! */
 }
 
 .runner-char.stumble {

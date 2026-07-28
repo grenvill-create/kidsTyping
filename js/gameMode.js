@@ -16,7 +16,7 @@ const gameMode = {
     start(lesson) {
         this.lesson = lesson;
         this.score = 0;
-        this.targetScore = 10;
+        this.targetScore = lesson.targetScore || 10;
         this.items = [];
         this.isPlaying = true;
         this.gameType = lesson.gameType || 'balloon';
@@ -245,7 +245,8 @@ const gameMode = {
     _runnerChar: null,
     startRunner() {
         const area = document.getElementById('balloon-area');
-        area.style.background = 'linear-gradient(180deg, #B0E0E6, #FFDAB9)';
+        area.classList.add('runner-bg');
+        area.style.background = ''; // Managed by CSS
         
         const track = document.createElement('div');
         track.className = 'runner-track';
@@ -312,7 +313,7 @@ const gameMode = {
             
             // Jump animation
             this._runnerChar.classList.add('jump');
-            setTimeout(() => this._runnerChar.classList.remove('jump'), 400);
+            setTimeout(() => this._runnerChar.classList.remove('jump'), 500);
             
             b.el.classList.add('cleared');
             setTimeout(() => { if(b.el.parentNode) b.el.parentNode.removeChild(b.el); }, 300);
