@@ -156,11 +156,22 @@ const app = {
     // ===== Parent Gate Logic =====
     parentGateTarget: null,
     parentGateAnswer: null,
+    parentGateAction: 'unlock', // 'unlock' or 'reset'
 
     openParentGate(lessonId) {
         this.parentGateTarget = lessonId;
-        const num1 = Math.floor(Math.random() * 9) + 1; // 1-9
-        const num2 = Math.floor(Math.random() * 9) + 1; // 1-9
+        this.parentGateAction = 'unlock';
+        this._showParentGate();
+    },
+
+    openResetGate() {
+        this.parentGateAction = 'reset';
+        this._showParentGate();
+    },
+
+    _showParentGate() {
+        const num1 = Math.floor(Math.random() * 9) + 1;
+        const num2 = Math.floor(Math.random() * 9) + 1;
         this.parentGateAnswer = num1 * num2;
         
         document.getElementById('parent-math-problem').textContent = `${num1} × ${num2} = ?`;
@@ -168,19 +179,22 @@ const app = {
         document.getElementById('parent-math-error').style.display = 'none';
         
         this.showModal('parent-gate-modal');
-        // auto focus input
         setTimeout(() => document.getElementById('parent-math-input').focus(), 100);
     },
 
     verifyParentGate() {
         const input = document.getElementById('parent-math-input').value;
         if (parseInt(input) === this.parentGateAnswer) {
-            // Correct! Force unlock
-            gameState.forceUnlock(this.parentGateTarget);
             this.closeParentGate();
-            this.renderLessonMap();
-            // Optional: directly start it
-            this.startLesson(this.parentGateTarget);
+
+            if (this.parentGateAction === 'reset') {
+                gameState.resetAll();
+                this.renderLessonMap();
+            } else {
+                gameState.forceUnlock(this.parentGateTarget);
+                this.renderLessonMap();
+                this.startLesson(this.parentGateTarget);
+            }
         } else {
             document.getElementById('parent-math-error').style.display = 'block';
             document.getElementById('parent-math-input').value = '';

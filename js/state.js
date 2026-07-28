@@ -54,6 +54,11 @@ const gameState = {
         this.save();
     },
 
+    resetAll() {
+        this.progress = {};
+        this.save();
+    },
+
     getLessonStars(lessonId) {
         return this.progress[lessonId] ? this.progress[lessonId].stars : 0;
     },
