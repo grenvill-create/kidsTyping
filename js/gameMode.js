@@ -30,6 +30,7 @@ const gameMode = {
         area.style.background = ''; // reset inline background
 
         audioManager.init();
+        audioManager.startBGM();
 
         // Dispatch to the right game
         switch (this.gameType) {
@@ -43,6 +44,7 @@ const gameMode = {
 
     stop() {
         this.isPlaying = false;
+        audioManager.stopBGM();
         if (this.spawnInterval) clearInterval(this.spawnInterval);
         if (this.gameLoop) cancelAnimationFrame(this.gameLoop);
         if (this._moleTimeout) clearTimeout(this._moleTimeout);
@@ -158,8 +160,8 @@ const gameMode = {
         grid.className = 'mole-grid';
         this._moleHoles = [];
         
-        // Create 4 holes
-        for(let i=0; i<4; i++) {
+        // Create 9 holes (3x3 grid)
+        for(let i=0; i<9; i++) {
             const hole = document.createElement('div');
             hole.className = 'mole-hole';
             const mole = document.createElement('div');
@@ -183,21 +185,27 @@ const gameMode = {
         const available = this._moleHoles.filter(h => !h.active);
         if (available.length === 0) return;
         
-        const hole = available[Math.floor(Math.random() * available.length)];
-        const char = this.randomChar();
+        // Spawn 2 or 3 moles at once
+        const count = Math.min(available.length, Math.random() > 0.5 ? 3 : 2);
         
-        hole.active = true;
-        hole.char = char;
-        hole.letterEl.textContent = char;
-        hole.el.classList.remove('whacked');
-        hole.el.classList.add('up');
-        
-        hole.timeout = setTimeout(() => {
-            if (hole.active) {
-                hole.el.classList.remove('up');
-                hole.active = false;
-            }
-        }, 3000);
+        for (let i = 0; i < count; i++) {
+            const idx = Math.floor(Math.random() * available.length);
+            const hole = available.splice(idx, 1)[0];
+            const char = this.randomChar();
+            
+            hole.active = true;
+            hole.char = char;
+            hole.letterEl.textContent = char;
+            hole.el.classList.remove('whacked');
+            hole.el.classList.add('up');
+            
+            hole.timeout = setTimeout(() => {
+                if (hole.active) {
+                    hole.el.classList.remove('up');
+                    hole.active = false;
+                }
+            }, 3000 + Math.random() * 1000); // 3-4 seconds before disappearing
+        }
     },
 
     handleMoleInput(ch) {

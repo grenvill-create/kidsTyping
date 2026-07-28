@@ -1,12 +1,39 @@
 const audioManager = {
     ctx: null,
     speechSynth: window.speechSynthesis,
+    bgmInterval: null,
 
     init() {
         if (!this.ctx) {
             this.ctx = new (window.AudioContext || window.webkitAudioContext)();
         }
         if (this.ctx.state === 'suspended') this.ctx.resume();
+    },
+
+    startBGM() {
+        this.init();
+        this.stopBGM();
+        const notes = [261.63, 329.63, 392.00, 440.00, 392.00, 329.63]; // Happy pentatonic-ish
+        let step = 0;
+        this.bgmInterval = setInterval(() => {
+            if (this.ctx.state !== 'running') return;
+            const osc = this.ctx.createOscillator();
+            const gain = this.ctx.createGain();
+            osc.connect(gain); gain.connect(this.ctx.destination);
+            osc.type = 'triangle';
+            osc.frequency.value = notes[step % notes.length] / 2; // Lower octave
+            gain.gain.setValueAtTime(0.03, this.ctx.currentTime); // Very soft
+            gain.gain.linearRampToValueAtTime(0.001, this.ctx.currentTime + 0.4);
+            osc.start(); osc.stop(this.ctx.currentTime + 0.4);
+            step++;
+        }, 500);
+    },
+
+    stopBGM() {
+        if (this.bgmInterval) {
+            clearInterval(this.bgmInterval);
+            this.bgmInterval = null;
+        }
     },
 
     playTick() {
