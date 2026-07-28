@@ -115,7 +115,7 @@ const gameMode = {
             // Pop it!
             const b = this.balloons[targetIndex];
             b.el.classList.add('popped');
-            audioManager.playKey();
+            audioManager.playPop();
             
             this.balloons.splice(targetIndex, 1);
             
