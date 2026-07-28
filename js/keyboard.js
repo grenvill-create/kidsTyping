@@ -51,6 +51,7 @@ const keyboardManager = {
     },
 
     _onKeyDown(e) {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
         if (e.ctrlKey || e.altKey || e.metaKey) return;
 
         // Prevent scrolling during game
@@ -73,6 +74,8 @@ const keyboardManager = {
     },
 
     _onKeyUp(e) {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
         let ch = e.key;
         if (ch === ' ') ch = ' ';
         else ch = ch.toLowerCase ? ch.toLowerCase() : ch;

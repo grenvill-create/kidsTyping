@@ -116,6 +116,7 @@ const app = {
 
     goHome() {
         typingMode.cleanup();
+        if (typeof gameMode !== 'undefined') gameMode.stop();
         this.hideModals();
         gameState.currentLessonId = null;
         this.renderLessonMap();
