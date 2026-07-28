@@ -33,6 +33,8 @@ const gameState = {
 
     isLessonUnlocked(lessonId) {
         if (lessonId === 1) return true;
+        if (this.progress[lessonId] && this.progress[lessonId].forceUnlocked) return true;
+
         const idx = lessons.findIndex(l => l.id === lessonId);
         if (idx > 0) {
             const prevLessonId = lessons[idx - 1].id;
@@ -40,6 +42,16 @@ const gameState = {
             return prev && prev.stars > 0;
         }
         return false;
+    },
+
+    forceUnlock(lessonId) {
+        if (!this.progress[lessonId]) {
+            this.progress[lessonId] = {
+                stars: 0, bestAccuracy: 0, bestWpm: 0
+            };
+        }
+        this.progress[lessonId].forceUnlocked = true;
+        this.save();
     },
 
     getLessonStars(lessonId) {

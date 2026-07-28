@@ -29,7 +29,11 @@ const app = {
             const card = document.createElement('div');
             card.className = `lesson-card ${unlocked ? '' : 'locked'} ${isCurrent ? 'current' : ''}`;
             card.onclick = () => {
-                if (unlocked) this.startLesson(lesson.id);
+                if (unlocked) {
+                    this.startLesson(lesson.id);
+                } else {
+                    this.openParentGate(lesson.id);
+                }
             };
 
             let starsHtml = '';
@@ -137,6 +141,56 @@ const app = {
     resumeFromBreak() {
         this.hideModals();
         gameState.resetSessionTime();
+    },
+
+    hideModal(id) {
+        document.getElementById(id).classList.add('hidden');
+        document.getElementById('modal-overlay').classList.add('hidden');
+    },
+
+    // ===== Parent Gate Logic =====
+    parentGateTarget: null,
+    parentGateAnswer: null,
+
+    openParentGate(lessonId) {
+        this.parentGateTarget = lessonId;
+        const num1 = Math.floor(Math.random() * 9) + 1; // 1-9
+        const num2 = Math.floor(Math.random() * 9) + 1; // 1-9
+        this.parentGateAnswer = num1 * num2;
+        
+        document.getElementById('parent-math-problem').textContent = `${num1} × ${num2} = ?`;
+        document.getElementById('parent-math-input').value = '';
+        document.getElementById('parent-math-error').style.display = 'none';
+        
+        this.showModal('parent-gate-modal');
+        // auto focus input
+        setTimeout(() => document.getElementById('parent-math-input').focus(), 100);
+    },
+
+    verifyParentGate() {
+        const input = document.getElementById('parent-math-input').value;
+        if (parseInt(input) === this.parentGateAnswer) {
+            // Correct! Force unlock
+            gameState.forceUnlock(this.parentGateTarget);
+            this.closeParentGate();
+            this.renderLessonMap();
+            // Optional: directly start it
+            this.startLesson(this.parentGateTarget);
+        } else {
+            document.getElementById('parent-math-error').style.display = 'block';
+            document.getElementById('parent-math-input').value = '';
+            document.getElementById('parent-math-input').focus();
+        }
+    },
+
+    closeParentGate() {
+        this.hideModal('parent-gate-modal');
+        this.parentGateTarget = null;
+    },
+
+    showModal(id) {
+        document.getElementById('modal-overlay').classList.remove('hidden');
+        document.getElementById(id).classList.remove('hidden');
     },
 
     hideModals() {

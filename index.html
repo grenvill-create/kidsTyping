@@ -97,6 +97,21 @@
         <!-- ===== MODALS ===== -->
         <div id="modal-overlay" class="modal-overlay hidden"></div>
 
+        <!-- Parent Gate Modal -->
+        <div id="parent-gate-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2>Parent Verification 🔒</h2>
+                <p style="margin-bottom: 1rem; color: var(--color-text-dim);">To unlock this level, please answer:</p>
+                <div id="parent-math-problem" style="font-size: 2rem; font-weight: 700; margin-bottom: 1rem;"></div>
+                <input type="number" id="parent-math-input" placeholder="?" style="font-size: 1.5rem; text-align: center; width: 100px; padding: 0.5rem; border: 2px solid var(--color-accent); border-radius: var(--radius-sm); outline: none;">
+                <p id="parent-math-error" style="color: var(--color-error); margin-top: 0.5rem; display: none;">Incorrect, try again.</p>
+                <div class="modal-actions" style="margin-top: 1.5rem;">
+                    <button class="btn btn-primary" onclick="app.verifyParentGate()">Unlock</button>
+                    <button class="btn btn-secondary" onclick="app.closeParentGate()">Cancel</button>
+                </div>
+            </div>
+        </div>
+
         <!-- Lesson Complete -->
         <div id="lesson-complete-modal" class="modal hidden">
             <div class="modal-content">
