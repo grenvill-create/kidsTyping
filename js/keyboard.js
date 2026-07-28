@@ -1,88 +1,106 @@
 const keyboardManager = {
     layout: [
-        ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p'],
-        ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l'],
-        ['z', 'x', 'c', 'v', 'b', 'n', 'm']
+        ['1','2','3','4','5','6','7','8','9','0'],
+        ['q','w','e','r','t','y','u','i','o','p'],
+        ['a','s','d','f','g','h','j','k','l',';'],
+        ['z','x','c','v','b','n','m',',','.','/'],
     ],
-    zones: {
-        'q':'pink', 'a':'pink', 'z':'pink',
-        'w':'orange', 's':'orange', 'x':'orange',
-        'e':'yellow', 'd':'yellow', 'c':'yellow',
-        'r':'green', 'f':'green', 'v':'green', 't':'green', 'g':'green', 'b':'green',
-        'y':'blue', 'h':'blue', 'n':'blue', 'u':'blue', 'j':'blue', 'm':'blue',
-        'i':'purple', 'k':'purple', 'o':'purple', 'l':'purple', 'p':'purple'
-    },
-    
+
     init() {
         const container = document.getElementById('virtual-keyboard');
-        if(!container) return;
+        if (!container) return;
         container.innerHTML = '';
-        
+
         this.layout.forEach(row => {
             const rowEl = document.createElement('div');
             rowEl.className = 'kb-row';
-            row.forEach(char => {
-                const keyEl = document.createElement('div');
-                keyEl.className = 'kb-key';
-                keyEl.id = `key-${char}`;
-                keyEl.dataset.zone = this.zones[char] || 'blue';
-                keyEl.textContent = char;
-                rowEl.appendChild(keyEl);
+            row.forEach(ch => {
+                const key = document.createElement('div');
+                key.className = 'kb-key';
+                key.id = `key-${this.keyId(ch)}`;
+                key.dataset.zone = zoneMap[ch] || 'grey';
+                key.textContent = ch;
+                rowEl.appendChild(key);
             });
             container.appendChild(rowEl);
         });
-        
-        document.addEventListener('keydown', this.handleGlobalKeyDown.bind(this));
-        document.addEventListener('keyup', this.handleGlobalKeyUp.bind(this));
+
+        // Space bar row
+        const spaceRow = document.createElement('div');
+        spaceRow.className = 'kb-row';
+        const spaceKey = document.createElement('div');
+        spaceKey.className = 'kb-key space-key';
+        spaceKey.id = 'key-space';
+        spaceKey.dataset.zone = 'grey';
+        spaceKey.textContent = 'SPACE';
+        spaceRow.appendChild(spaceKey);
+        container.appendChild(spaceRow);
+
+        document.addEventListener('keydown', this._onKeyDown.bind(this));
+        document.addEventListener('keyup', this._onKeyUp.bind(this));
     },
-    
-    handleGlobalKeyDown(e) {
+
+    keyId(ch) {
+        if (ch === ' ') return 'space';
+        if (ch === ';') return 'semicolon';
+        if (ch === ',') return 'comma';
+        if (ch === '.') return 'period';
+        if (ch === '/') return 'slash';
+        if (ch === "'") return 'quote';
+        return ch;
+    },
+
+    _onKeyDown(e) {
         if (e.ctrlKey || e.altKey || e.metaKey) return;
-        
-        const char = e.key.toLowerCase();
-        if (/^[a-z]$/.test(char) || e.key === ' ') {
-            if (gameState.currentMode) {
-                e.preventDefault(); // Prevent accidental browser scrolling or shortcuts
+
+        // Prevent scrolling during game
+        if (gameState.currentLessonId) {
+            if (e.key === ' ' || e.key.length === 1) {
+                e.preventDefault();
             }
         }
-        
-        if (/^[a-z]$/.test(char)) {
-            const keyEl = document.getElementById(`key-${char}`);
-            if (keyEl) keyEl.classList.add('pressed');
-            
-            if (window.app && typeof app.handleInput === 'function') {
-                app.handleInput(char);
-            }
+
+        let ch = e.key;
+        if (ch === ' ') ch = ' ';
+        else ch = ch.toLowerCase ? ch.toLowerCase() : ch;
+
+        const keyEl = document.getElementById(`key-${this.keyId(ch)}`);
+        if (keyEl) keyEl.classList.add('pressed');
+
+        if (window.app && typeof app.handleInput === 'function') {
+            app.handleInput(ch, e.shiftKey);
         }
     },
-    
-    handleGlobalKeyUp(e) {
-        const char = e.key.toLowerCase();
-        if (/^[a-z]$/.test(char)) {
-            const keyEl = document.getElementById(`key-${char}`);
-            if (keyEl) keyEl.classList.remove('pressed');
-        }
+
+    _onKeyUp(e) {
+        let ch = e.key;
+        if (ch === ' ') ch = ' ';
+        else ch = ch.toLowerCase ? ch.toLowerCase() : ch;
+
+        const keyEl = document.getElementById(`key-${this.keyId(ch)}`);
+        if (keyEl) keyEl.classList.remove('pressed');
     },
-    
-    highlightKey(char) {
+
+    highlightKey(ch) {
         this.clearHighlights();
-        if (!char) return;
-        const keyEl = document.getElementById(`key-${char.toLowerCase()}`);
+        if (!ch) return;
+        const k = ch.toLowerCase ? ch.toLowerCase() : ch;
+        const keyEl = document.getElementById(`key-${this.keyId(k)}`);
         if (keyEl) keyEl.classList.add('target');
     },
-    
+
     clearHighlights() {
         document.querySelectorAll('.kb-key.target').forEach(el => el.classList.remove('target'));
-        document.querySelectorAll('.kb-key.error-shake').forEach(el => el.classList.remove('error-shake'));
     },
-    
-    showError(char) {
-        if (!char) return;
-        const keyEl = document.getElementById(`key-${char.toLowerCase()}`);
-        if (keyEl) {
-            keyEl.classList.remove('error-shake');
-            void keyEl.offsetWidth; // trigger reflow
-            keyEl.classList.add('error-shake');
+
+    highlightFinger(ch) {
+        document.querySelectorAll('.finger.active').forEach(el => el.classList.remove('active'));
+        if (!ch) return;
+        const k = ch.toLowerCase ? ch.toLowerCase() : ch;
+        const finger = fingerMap[k];
+        if (finger) {
+            const el = document.querySelector(`.finger[data-finger="${finger}"]`);
+            if (el) el.classList.add('active');
         }
     }
 };

@@ -3,148 +3,144 @@ const app = {
         gameState.init();
         keyboardManager.init();
         gameState.startSession();
-        
-        // Listen for keyboard events
-        document.addEventListener('kidsTypingKey', (e) => {
-            this.handleInput(e.detail.char);
+        this.renderLessonMap();
+
+        // Apply saved hand toggle state
+        const guide = document.getElementById('finger-guide');
+        const btn = document.getElementById('btn-toggle-hands');
+        if (gameState.showHands) {
+            guide.classList.remove('hidden');
+            btn.classList.add('active');
+        } else {
+            guide.classList.add('hidden');
+            btn.classList.remove('active');
+        }
+    },
+
+    renderLessonMap() {
+        const container = document.getElementById('lesson-map');
+        container.innerHTML = '';
+
+        lessons.forEach(lesson => {
+            const unlocked = gameState.isLessonUnlocked(lesson.id);
+            const stars = gameState.getLessonStars(lesson.id);
+            const isCurrent = unlocked && stars === 0;
+
+            const card = document.createElement('div');
+            card.className = `lesson-card ${unlocked ? '' : 'locked'} ${isCurrent ? 'current' : ''}`;
+            card.onclick = () => {
+                if (unlocked) this.startLesson(lesson.id);
+            };
+
+            let starsHtml = '';
+            if (unlocked && stars > 0) {
+                for (let i = 0; i < 3; i++) {
+                    starsHtml += i < stars ? '⭐' : '☆';
+                }
+            }
+
+            card.innerHTML = `
+                <div class="lesson-num">${unlocked ? lesson.id : '🔒'}</div>
+                <div class="lesson-keys">${lesson.title}</div>
+                ${starsHtml ? `<div class="lesson-stars">${starsHtml}</div>` : ''}
+            `;
+            container.appendChild(card);
         });
     },
-    
-    startGame(mode) {
-        audioManager.init(); // Must be called on user interaction
-        gameState.currentMode = mode;
-        gameState.currentLevelIndex = 0;
-        
-        document.getElementById('home-view').classList.remove('active');
-        document.getElementById('home-view').classList.add('hidden');
-        
-        document.getElementById('game-view').classList.remove('hidden');
-        document.getElementById('game-view').classList.add('active');
-        
-        this.startLevel();
+
+    startLesson(lessonId) {
+        audioManager.init();
+        const lesson = lessons.find(l => l.id === lessonId);
+        if (!lesson) return;
+
+        gameState.currentLessonId = lessonId;
+        document.getElementById('lesson-title').textContent = `Lesson ${lesson.id}: ${lesson.title}`;
+        document.getElementById('stat-accuracy').textContent = 'Accuracy: --';
+        document.getElementById('stat-wpm').textContent = 'WPM: --';
+
+        this.switchView('game-view');
+        typingMode.start(lesson);
     },
-    
-    startLevel() {
-        this.updateProgress(0);
-        document.getElementById('virtual-keyboard').style.display = 'flex';
-        
-        if (gameState.currentMode === 'letter') {
-            letterMode.start(gameState.currentLevelIndex);
-        } else if (gameState.currentMode === 'word') {
-            wordMode.start(gameState.currentLevelIndex);
-        } else if (gameState.currentMode === 'balloon') {
-            balloonMode.start(gameState.currentLevelIndex);
-        }
+
+    handleInput(ch, shiftKey) {
+        if (!gameState.currentLessonId) return;
+        // For simplicity pass the raw character
+        typingMode.handleInput(ch);
     },
-    
-    handleInput(char) {
-        if (gameState.currentMode === 'letter') {
-            letterMode.handleInput(char);
-        } else if (gameState.currentMode === 'word') {
-            wordMode.handleInput(char);
-        } else if (gameState.currentMode === 'balloon') {
-            balloonMode.handleInput(char);
-        }
-    },
-    
-    updateProgress(percent) {
-        document.getElementById('level-progress').style.width = `${Math.min(100, percent * 100)}%`;
-    },
-    
-    levelComplete() {
+
+    lessonComplete(accuracy, wpm) {
+        const stars = gameState.saveResult(gameState.currentLessonId, accuracy, wpm);
         audioManager.playSuccess();
-        audioManager.speak("Great job! Level complete!");
-        
-        gameState.stars += 3;
-        gameState.save();
-        
-        // Cleanup current mode
-        if (gameState.currentMode === 'letter') letterMode.cleanup();
-        else if (gameState.currentMode === 'word') wordMode.cleanup();
-        else if (gameState.currentMode === 'balloon') balloonMode.cleanup();
-        
-        document.getElementById('virtual-keyboard').style.display = 'none';
-        
-        // Show modal
+
+        rewardsManager.showResult(accuracy, wpm, stars);
         document.getElementById('modal-overlay').classList.remove('hidden');
-        const modal = document.getElementById('level-complete-modal');
-        modal.classList.remove('hidden');
-        
-        document.getElementById('modal-stars').innerHTML = '⭐ ⭐ ⭐';
-        document.getElementById('current-stars').innerHTML = `⭐ ${gameState.stars}`;
-        
-        // Sticker reward
-        const sticker = gameState.unlockRandomSticker();
-        const stickerReward = document.getElementById('modal-sticker-reward');
-        if (sticker) {
-            stickerReward.innerHTML = `<p>You got a sticker!</p><div style="font-size:4rem">${sticker.icon}</div>`;
+        document.getElementById('lesson-complete-modal').classList.remove('hidden');
+    },
+
+    nextLesson() {
+        this.hideModals();
+        const nextId = gameState.currentLessonId + 1;
+        if (nextId <= lessons.length && gameState.isLessonUnlocked(nextId)) {
+            this.startLesson(nextId);
         } else {
-            stickerReward.innerHTML = '';
+            this.goHome();
         }
     },
-    
-    nextLevel() {
+
+    restartLesson() {
         this.hideModals();
-        
-        let maxLevels = 0;
-        if (gameState.currentMode === 'letter') maxLevels = gameData.levels.letter.length;
-        if (gameState.currentMode === 'word') maxLevels = gameData.levels.word.length;
-        if (gameState.currentMode === 'balloon') maxLevels = gameData.levels.balloon.length;
-        
-        gameState.currentLevelIndex++;
-        if (gameState.currentLevelIndex >= maxLevels) {
-            // Loop back or go home
-            gameState.currentLevelIndex = 0; 
+        if (gameState.currentLessonId) {
+            this.startLesson(gameState.currentLessonId);
         }
-        
-        this.startLevel();
     },
-    
+
     goHome() {
-        // Cleanup current mode
-        if (gameState.currentMode === 'letter') letterMode.cleanup();
-        else if (gameState.currentMode === 'word') wordMode.cleanup();
-        else if (gameState.currentMode === 'balloon') balloonMode.cleanup();
-        
+        typingMode.cleanup();
         this.hideModals();
-        gameState.currentMode = null;
-        
-        document.getElementById('game-view').classList.remove('active');
-        document.getElementById('game-view').classList.add('hidden');
-        document.getElementById('sticker-view').classList.remove('active');
-        document.getElementById('sticker-view').classList.add('hidden');
-        
-        document.getElementById('home-view').classList.remove('hidden');
-        document.getElementById('home-view').classList.add('active');
+        gameState.currentLessonId = null;
+        this.renderLessonMap();
+        this.switchView('home-view');
     },
-    
-    showStickerBook() {
-        document.getElementById('home-view').classList.remove('active');
-        document.getElementById('home-view').classList.add('hidden');
-        
-        document.getElementById('sticker-view').classList.remove('hidden');
-        document.getElementById('sticker-view').classList.add('active');
-        
-        rewardsManager.renderStickerBook();
+
+    toggleHands() {
+        const guide = document.getElementById('finger-guide');
+        const btn = document.getElementById('btn-toggle-hands');
+        gameState.showHands = !gameState.showHands;
+        if (gameState.showHands) {
+            guide.classList.remove('hidden');
+            btn.classList.add('active');
+        } else {
+            guide.classList.add('hidden');
+            btn.classList.remove('active');
+        }
+        gameState.save();
     },
-    
+
     showBreakModal() {
         document.getElementById('modal-overlay').classList.remove('hidden');
         document.getElementById('break-modal').classList.remove('hidden');
     },
-    
+
     resumeFromBreak() {
         this.hideModals();
         gameState.resetSessionTime();
     },
-    
+
     hideModals() {
         document.getElementById('modal-overlay').classList.add('hidden');
-        document.getElementById('level-complete-modal').classList.add('hidden');
+        document.getElementById('lesson-complete-modal').classList.add('hidden');
         document.getElementById('break-modal').classList.add('hidden');
+    },
+
+    switchView(targetId) {
+        document.querySelectorAll('.view').forEach(v => {
+            v.classList.remove('active');
+            v.classList.add('hidden');
+        });
+        const target = document.getElementById(targetId);
+        target.classList.remove('hidden');
+        target.classList.add('active');
     }
 };
 
-window.onload = () => {
-    app.init();
-};
+window.onload = () => { app.init(); };

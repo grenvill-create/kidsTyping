@@ -1,30 +1,39 @@
 :root {
-    /* Colors */
-    --color-bg-sky: #A1C4FD;
-    --color-bg-sky-dark: #C2E9FB;
-    --color-text-main: #333333;
+    /* Background — Light pastel theme */
+    --color-bg: #f0f4ff;
+    --color-bg-card: #ffffff;
+    --color-bg-surface: #e8edf8;
     --color-white: #FFFFFF;
-    
-    /* Keyboard zones */
-    --key-zone-pink: #FFB3BA;
-    --key-zone-orange: #FFDFBA;
-    --key-zone-yellow: #FFFFBA;
-    --key-zone-green: #BAFFC9;
-    --key-zone-blue: #BAE1FF;
-    --key-zone-purple: #E0BBE4;
-    
-    /* Buttons */
-    --btn-primary: #FF9A9E;
-    --btn-secondary: #FECFEF;
-    --btn-tertiary: #A18CD1;
-    --btn-shadow: rgba(0,0,0,0.1);
-    
+    --color-text: #333333;
+    --color-text-dim: #888;
+
+    /* Accents */
+    --color-accent: #e94560;
+    --color-accent-soft: #f8d7dd;
+    --color-success: #22c55e;
+    --color-error: #f97316;
+    --color-gold: #f59e0b;
+
+    /* Keyboard zones — left hand */
+    --key-zone-pink: #FF9AA2;
+    --key-zone-orange: #FFB347;
+    --key-zone-yellow: #FDFD96;
+    --key-zone-green: #77DD77;
+    /* Keyboard zones — right hand */
+    --key-zone-blue: #84B6F4;
+    --key-zone-teal: #77E4D4;
+    --key-zone-purple: #C3B1E1;
+    --key-zone-rose: #F4A9C0;
+    /* Shared */
+    --key-zone-grey: #ccc;
+
     /* Border radii */
     --radius-sm: 8px;
-    --radius-md: 16px;
-    --radius-lg: 24px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
     --radius-round: 50px;
-    
+
     /* Typography */
     --font-family: 'Fredoka', sans-serif;
+    --font-mono: 'Fredoka', monospace;
 }
