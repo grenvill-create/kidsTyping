@@ -75,7 +75,7 @@ const typingMode = {
         const expected = this.chars[this.currentIndex].char;
         this.totalTyped++;
 
-        if (inputChar === expected) {
+        if (inputChar === expected.toLowerCase()) {
             this.chars[this.currentIndex].state = 'correct';
             this.totalCorrect++;
             audioManager.playTick();

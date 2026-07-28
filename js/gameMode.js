@@ -129,7 +129,7 @@ const gameMode = {
         // find lowest balloon with matching char
         let idx = -1, lowest = 9999;
         for (let i = 0; i < this.items.length; i++) {
-            if (this.items[i].char === ch && this.items[i].y < lowest) {
+            if (this.items[i].char.toLowerCase() === ch && this.items[i].y < lowest) {
                 lowest = this.items[i].y;
                 idx = i;
             }
@@ -212,7 +212,7 @@ const gameMode = {
         let hit = false;
         for (let i = 0; i < this._moleHoles.length; i++) {
             const hole = this._moleHoles[i];
-            if (hole.active && hole.char === ch) {
+            if (hole.active && hole.char.toLowerCase() === ch) {
                 hit = true;
                 hole.active = false;
                 clearTimeout(hole.timeout);
@@ -299,7 +299,7 @@ const gameMode = {
         // Find leftmost uncleared hurdle
         let idx = -1, leftmost = 9999;
         for (let i = 0; i < this.items.length; i++) {
-            if (!this.items[i].cleared && this.items[i].char === ch && this.items[i].x < leftmost) {
+            if (!this.items[i].cleared && this.items[i].char.toLowerCase() === ch && this.items[i].x < leftmost) {
                 leftmost = this.items[i].x;
                 idx = i;
             }
@@ -415,7 +415,7 @@ const gameMode = {
         
         for (let i = 0; i < this.items.length; i++) {
             const b = this.items[i];
-            if (!b.destroyed && b.char === ch) {
+            if (!b.destroyed && b.char.toLowerCase() === ch) {
                 const dx = shipX - b.x;
                 const dy = shipY - b.y;
                 const dist = Math.sqrt(dx*dx + dy*dy);
