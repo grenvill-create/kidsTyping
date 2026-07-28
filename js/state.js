@@ -7,6 +7,9 @@ const gameState = {
     // Per-lesson progress: { lessonId: { stars: 0-3, bestAccuracy: 0, bestWpm: 0 } }
     progress: {},
 
+    // Leaderboards for games: { gameType: [ {score, date}, ... ] }
+    leaderboards: { balloon: [], mole: [], runner: [], space: [] },
+
     globalUnlock: false,
 
     init() {
@@ -15,6 +18,7 @@ const gameState = {
             if (saved) {
                 const data = JSON.parse(saved);
                 this.progress = data.progress || {};
+                this.leaderboards = data.leaderboards || { balloon: [], mole: [], runner: [], space: [] };
                 this.showHands = data.showHands !== undefined ? data.showHands : true;
                 this.globalUnlock = data.globalUnlock || false;
             }
@@ -27,6 +31,7 @@ const gameState = {
         try {
             localStorage.setItem('kidsTypingV2', JSON.stringify({
                 progress: this.progress,
+                leaderboards: this.leaderboards,
                 showHands: this.showHands,
                 globalUnlock: this.globalUnlock
             }));
@@ -57,8 +62,27 @@ const gameState = {
 
     resetAll() {
         this.progress = {};
+        this.leaderboards = { balloon: [], mole: [], runner: [], space: [] };
         this.globalUnlock = false;
         this.save();
+    },
+
+    saveHighScore(gameType, score) {
+        if (!this.leaderboards[gameType]) {
+            this.leaderboards[gameType] = [];
+        }
+        this.leaderboards[gameType].push({
+            score: score,
+            date: new Date().toLocaleDateString()
+        });
+        // Sort descending and keep top 5
+        this.leaderboards[gameType].sort((a, b) => b.score - a.score);
+        this.leaderboards[gameType] = this.leaderboards[gameType].slice(0, 5);
+        this.save();
+    },
+
+    getLeaderboard(gameType) {
+        return this.leaderboards[gameType] || [];
     },
 
     getLessonStars(lessonId) {

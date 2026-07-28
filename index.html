@@ -89,7 +89,8 @@
                 <button class="btn btn-secondary btn-icon" onclick="app.goHome()">◀</button>
                 <div class="lesson-title" id="game-title">Balloon Pop</div>
                 <div class="stats-bar">
-                    <span class="stat" id="game-score">Score: 0 / 10</span>
+                    <span class="stat" id="game-timer" style="color: #ff4757; font-weight: bold;">Time: 60s</span>
+                    <span class="stat" id="game-score">Score: 0 / 1000</span>
                 </div>
             </div>
             <main class="game-area" id="balloon-area">
@@ -136,6 +137,21 @@
                 <div class="break-character">🐻</div>
                 <p>Great job! Let's rest our eyes.</p>
                 <button class="btn btn-primary" onclick="app.resumeFromBreak()">I'm Ready! ▶️</button>
+            </div>
+        </div>
+        
+        <!-- Leaderboard Modal -->
+        <div id="leaderboard-modal" class="modal hidden">
+            <div class="modal-content">
+                <h2>🏆 Top Scores 🏆</h2>
+                <div id="leaderboard-list" style="margin: 1rem 0; text-align: left; font-size: 1.2rem;">
+                    <!-- Scores injected here -->
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-primary" onclick="app.nextLesson()">Next Lesson ➡️</button>
+                    <button class="btn btn-secondary" onclick="app.restartLesson()">Try Again 🔄</button>
+                    <button class="btn btn-ghost" onclick="app.goHome()">Home 🏠</button>
+                </div>
             </div>
         </div>
     </div>

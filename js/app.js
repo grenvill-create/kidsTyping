@@ -87,7 +87,18 @@ const app = {
     },
 
     lessonComplete(accuracy, wpm) {
-        const stars = gameState.saveResult(gameState.currentLessonId, accuracy, wpm);
+        let stars = 0;
+        if (accuracy >= 95) stars = 3;
+        else if (accuracy >= 85) stars = 2;
+        else if (accuracy >= 70) stars = 1;
+
+        // Ensure we always save game stars as 3 if they passed
+        const currentLesson = lessons.find(l => l.id === gameState.currentLessonId);
+        if (currentLesson && (currentLesson.type === 'game' || currentLesson.gameType)) {
+            stars = 3;
+        }
+
+        gameState.saveResult(gameState.currentLessonId, accuracy, wpm);
         audioManager.playSuccess();
 
         rewardsManager.showResult(accuracy, wpm, stars);
@@ -146,6 +157,44 @@ const app = {
     resumeFromBreak() {
         this.hideModals();
         gameState.resetSessionTime();
+    },
+
+    showLeaderboard(gameType, passed) {
+        if (passed) {
+            // Save progress silently so we unlock the next level
+            gameState.saveResult(gameState.currentLessonId, 100, 20);
+            audioManager.playSuccess();
+        }
+        
+        const board = gameState.getLeaderboard(gameType);
+        const listEl = document.getElementById('leaderboard-list');
+        listEl.innerHTML = '';
+        
+        let html = '';
+        if (passed) {
+            html += `<p style="color: #2ed573; font-weight: bold; text-align: center; margin-bottom: 1rem;">✅ You passed!</p>`;
+        } else {
+            html += `<p style="color: #ff4757; font-weight: bold; text-align: center; margin-bottom: 1rem;">❌ Time's up! Try again to reach the target score.</p>`;
+        }
+        
+        board.forEach((entry, i) => {
+            let medal = '';
+            if (i === 0) medal = '🥇 ';
+            else if (i === 1) medal = '🥈 ';
+            else if (i === 2) medal = '🥉 ';
+            html += `<div style="display: flex; justify-content: space-between; padding: 0.5rem; border-bottom: 1px solid #eee;">
+                <span>${medal}Rank ${i+1}</span>
+                <span style="font-weight: bold;">${entry.score} pts</span>
+            </div>`;
+        });
+        
+        if (board.length === 0) {
+            html += `<p style="text-align: center;">No scores yet!</p>`;
+        }
+        
+        listEl.innerHTML = html;
+        this.showModal('leaderboard-modal');
+        audioManager.playWin();
     },
 
     hideModal(id) {
@@ -216,6 +265,7 @@ const app = {
         document.getElementById('modal-overlay').classList.add('hidden');
         document.getElementById('lesson-complete-modal').classList.add('hidden');
         document.getElementById('break-modal').classList.add('hidden');
+        document.getElementById('leaderboard-modal').classList.add('hidden');
     },
 
     switchView(targetId) {

@@ -7,8 +7,10 @@ const gameMode = {
     targetScore: 10,
     items: [],
     spawnInterval: null,
+    timerInterval: null,
     gameLoop: null,
     isPlaying: false,
+    timeLeft: 60,
     gameType: 'balloon',
 
     colors: ['#FF9AA2', '#FFB347', '#FDFD96', '#77DD77', '#84B6F4', '#C3B1E1'],
@@ -19,10 +21,12 @@ const gameMode = {
         this.targetScore = lesson.targetScore || 10;
         this.items = [];
         this.isPlaying = true;
+        this.timeLeft = 60;
         this.gameType = lesson.gameType || 'balloon';
 
         document.getElementById('game-title').textContent = lesson.title;
-        document.getElementById('game-score').textContent = `Score: 0 / ${this.targetScore}`;
+        document.getElementById('game-score').textContent = `Score: 0 / ${this.targetScore * 100}`;
+        document.getElementById('game-timer').textContent = `Time: 60s`;
         
         const area = document.getElementById('balloon-area');
         area.innerHTML = '';
@@ -40,12 +44,35 @@ const gameMode = {
             case 'space':   this.startSpace();   break;
             default:        this.startBalloon(); break;
         }
+
+        this.timerInterval = setInterval(() => {
+            if (!this.isPlaying) return;
+            this.timeLeft--;
+            document.getElementById('game-timer').textContent = `Time: ${this.timeLeft}s`;
+            if (this.timeLeft <= 0) {
+                this.endGame();
+            }
+        }, 1000);
+    },
+
+    endGame() {
+        this.stop();
+        // Save score
+        gameState.saveHighScore(this.gameType, this.score);
+        
+        // Check pass condition
+        if (this.score >= this.targetScore * 100) {
+            app.showLeaderboard(this.gameType, true); // true = passed
+        } else {
+            app.showLeaderboard(this.gameType, false); // false = failed
+        }
     },
 
     stop() {
         this.isPlaying = false;
         audioManager.stopBGM();
         if (this.spawnInterval) clearInterval(this.spawnInterval);
+        if (this.timerInterval) clearInterval(this.timerInterval);
         if (this.gameLoop) cancelAnimationFrame(this.gameLoop);
         if (this._moleTimeout) clearTimeout(this._moleTimeout);
         this.items.forEach(b => {
@@ -68,10 +95,7 @@ const gameMode = {
     },
 
     updateScore() {
-        document.getElementById('game-score').textContent = `Score: ${this.score} / ${this.targetScore}`;
-        if (this.score >= this.targetScore) {
-            this.win();
-        }
+        document.getElementById('game-score').textContent = `Score: ${this.score} / ${this.targetScore * 100}`;
     },
 
     win() {
@@ -141,7 +165,7 @@ const gameMode = {
             b.el.classList.add('popped');
             this.items.splice(idx, 1);
             setTimeout(() => { if (b.el.parentNode) b.el.parentNode.removeChild(b.el); }, 200);
-            this.score++;
+            this.score += 100;
             this.updateScore();
         } else {
             audioManager.playError();
@@ -227,11 +251,7 @@ const gameMode = {
                 }, 300);
 
                 hole.el.classList.add('whacked');
-                setTimeout(() => {
-                    hole.el.classList.remove('up');
-                }, 150);
-                
-                this.score++;
+                this.score += 100;
                 this.updateScore();
                 break;
             }
@@ -319,7 +339,7 @@ const gameMode = {
             setTimeout(() => { if(b.el.parentNode) b.el.parentNode.removeChild(b.el); }, 300);
             this.items.splice(idx, 1);
             
-            this.score++;
+            this.score += 100;
             this.updateScore();
         } else {
             audioManager.playError();
@@ -454,7 +474,7 @@ const gameMode = {
             setTimeout(() => { if(b.el.parentNode) b.el.parentNode.removeChild(b.el); }, 300);
             this.items.splice(idx, 1);
             
-            this.score++;
+            this.score += 100;
             this.updateScore();
         } else {
             audioManager.playError();
