@@ -79,7 +79,7 @@ const app = {
         if (!lesson) return;
         
         if (lesson.type === 'game') {
-            if (window.gameMode) gameMode.handleInput(ch);
+            if (typeof gameMode !== 'undefined') gameMode.handleInput(ch);
         } else {
             typingMode.handleInput(ch);
         }

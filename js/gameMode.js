@@ -12,7 +12,7 @@ const gameMode = {
     start(lesson) {
         this.lesson = lesson;
         this.score = 0;
-        this.targetScore = 20;
+        this.targetScore = 10;
         this.balloons = [];
         this.isPlaying = true;
         
@@ -21,7 +21,7 @@ const gameMode = {
         document.getElementById('balloon-area').innerHTML = '';
 
         // Start spawning
-        this.spawnInterval = setInterval(() => this.spawnBalloon(), 1500);
+        this.spawnInterval = setInterval(() => this.spawnBalloon(), 3000);
         
         // Game loop for moving balloons
         let lastTime = performance.now();
@@ -75,7 +75,7 @@ const gameMode = {
             el: el,
             char: char,
             y: -100, // starting below
-            speed: 80 + Math.random() * 50 // pixels per second
+            speed: 35 + Math.random() * 25 // pixels per second
         });
     },
 
